@@ -136,9 +136,16 @@ Tags: e-commerce, block-patterns, full-site-editing, wide-blocks
 		justify-content: center;
 		padding: 0;
 	}
-	.wp-site-blocks > main.pawline-section {
-		margin-block-start: 0;
+	/* Auch wenn WooCommerce den Inhalt einrahmt (z. B. Produktseite: div.woocommerce.product > main). */
+	main.pawline-section {
 		padding-top: 1.25rem;
+	}
+	.wp-site-blocks > main.pawline-section,
+	.wp-site-blocks > :has(> main.pawline-section) {
+		margin-block-start: 0;
+	}
+	:has(> main.pawline-section) > main.pawline-section {
+		margin-block-start: 0;
 	}
 	main.pawline-section > .wp-block-woocommerce-breadcrumbs:first-child,
 	main.pawline-section > .woocommerce-breadcrumb:first-child {
