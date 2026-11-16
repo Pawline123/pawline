@@ -25,22 +25,49 @@ const record = (area, name, ok, detail = '', warnOnly = false) => {
 const NOTICE = /§\s*19\s*UStG|Kleinunternehmer/i;
 const TAX_SHOWN = /(inkl\.|inklusive|zzgl\.|zuzüglich)\s*(\d+([,.]\d+)?\s*%\s*)?(MwSt|USt|Mehrwertsteuer|Umsatzsteuer)|\b\d+([,.]\d+)?\s*%\s*(MwSt|USt)\b/i;
 
-async function checkTaxTexts(area, page) {
+// Prüft, ob der § 19-Hinweis DIREKT beim Preis bzw. Gesamtbetrag steht (Abstand in Pixeln, gleiche Spalte).
+// Treffer im Kopf- oder Fußbereich der Seite zählen nie.
+// anchor: CSS-Selektor des Preises/Summenelements; rowText: optional Regex-Quelle für die Summenzeile;
+// scope: optional Element-Selektor/Text, auf den Anker und Hinweis beschränkt werden.
+async function checkNoticeAtPrice(area, page, { anchor, label, maxGap = 48, rowText = null, scopeText = null }) {
+  const r = await page.evaluate(({ anchor, maxGap, rowText, scopeText, noticeSrc }) => {
+    const NOTICE = new RegExp(noticeSrc, 'i');
+    const inChrome = (el) => !!el.closest('header, footer, .wp-block-template-part');
+    const visible = (el) => { const b = el.getBoundingClientRect(); return b.width > 0 && b.height > 0 && getComputedStyle(el).visibility !== 'hidden'; };
+    let root = document;
+    if (scopeText) {
+      const card = [...document.querySelectorAll('li, .wc-block-product, .wp-block-post, .product')]
+        .filter((e) => e.textContent.includes(scopeText) && !inChrome(e))
+        .sort((a, b) => a.textContent.length - b.textContent.length)[0];
+      if (!card) return { error: `Produktkarte „${scopeText}“ nicht gefunden` };
+      root = card;
+    }
+    let anchors = [...root.querySelectorAll(anchor)].filter((e) => visible(e) && !inChrome(e));
+    if (rowText) {
+      const re = new RegExp(rowText, 'i');
+      anchors = anchors.filter((e) => re.test(e.textContent));
+    }
+    const a = anchors[0];
+    if (!a) return { error: `Preis-/Summenelement nicht gefunden (${anchor}${rowText ? ' mit „' + rowText + '“' : ''})` };
+    const ab = a.getBoundingClientRect();
+    // Kleinste sichtbare Elemente mit dem Hinweistext (nicht deren Eltern).
+    const leaves = [...root.querySelectorAll('*')]
+      .filter((e) => NOTICE.test(e.textContent) && ![...e.children].some((c) => NOTICE.test(c.textContent)) && visible(e));
+    const all = leaves.map((e) => {
+      const b = e.getBoundingClientRect();
+      return { text: e.textContent.replace(/\s+/g, ' ').trim().slice(0, 100), chrome: inChrome(e), gap: Math.round(b.top - ab.bottom), overlapX: b.left < ab.right + 150 && b.right > ab.left - 150, sameRow: b.top < ab.bottom && b.bottom > ab.top };
+    });
+    const near = all.filter((n) => !n.chrome && n.overlapX && (n.sameRow || (n.gap >= -4 && n.gap <= maxGap)));
+    return { anchorText: a.textContent.replace(/\s+/g, ' ').trim().slice(0, 60), near: near[0] || null, others: all.slice(0, 4) };
+  }, { anchor, maxGap, rowText, scopeText, noticeSrc: NOTICE.source });
+
+  if (r.error) return record(area, `§ 19-Hinweis ${label}`, false, r.error);
+  if (r.near) return record(area, `§ 19-Hinweis ${label}`, true, `„${r.near.text}“ (${r.near.sameRow ? 'gleiche Zeile' : r.near.gap + ' px darunter'}; Bezug: „${r.anchorText}“)`);
+  const where = r.others.length ? r.others.map((o) => `${o.chrome ? 'Kopf-/Fußbereich' : (o.overlapX ? o.gap + ' px Abstand' : 'andere Spalte')}: „${o.text.slice(0, 50)}“`).join(' | ') : 'kein Hinweis auf der Seite';
+  record(area, `§ 19-Hinweis ${label}`, false, `nicht beim Preis (max. ${maxGap} px). Gefunden: ${where}`);
+}
+async function checkNoTaxShown(area, page) {
   const all = await page.innerText('body');
-  // Hauptbereich ohne Kopf-/Fußbereich des Themes (dort steht ein fester § 19-Text).
-  const main = await page.evaluate(() => {
-    const m = document.querySelector('main') || document.body;
-    const clone = m.cloneNode(true);
-    clone.querySelectorAll('header, footer, .wp-block-template-part').forEach((e) => e.remove());
-    return clone.innerText;
-  });
-  const inMain = main.match(NOTICE);
-  const inAll = all.match(NOTICE);
-  if (inMain) {
-    record(area, 'Kleinunternehmerhinweis im Inhalt (Germanized)', true, `„${context(main, inMain.index)}“`);
-  } else {
-    record(area, 'Kleinunternehmerhinweis im Inhalt (Germanized)', false, inAll ? `nur im Kopf-/Fußbereich: „${context(all, inAll.index)}“` : 'kein „§ 19 UStG“/„Kleinunternehmer“ auf der Seite', !!inAll);
-  }
   const tax = all.match(TAX_SHOWN);
   record(area, 'Kein Umsatzsteuerausweis', !tax, tax ? `gefunden: „${context(all, tax.index)}“` : '');
 }
@@ -77,13 +104,30 @@ const shot = (name) => page.screenshot({ path: `${OUT}/screenshots/${name}.png`,
 
 let orderPlaced = false;
 try {
+  // 0. Produktübersicht (Shop) – dort kann direkt in den Warenkorb gelegt werden.
+  const sresp = await page.goto(urls.shop, { waitUntil: 'networkidle' });
+  record('Produktübersicht', 'Shopseite lädt', sresp?.ok() ?? false, `${urls.shop} → HTTP ${sresp?.status()}`);
+  const sText = await page.innerText('body');
+  record('Produktübersicht', 'Demoprodukt mit 19,90 € gelistet', sText.includes('[DEMO] Einfaches Produkt') && /19,90\s*€/.test(sText));
+  const listButton = await page.evaluate(() => {
+    const card = [...document.querySelectorAll('li, .wc-block-product, .wp-block-post')]
+      .filter((e) => e.textContent.includes('[DEMO] Einfaches Produkt')).sort((a, b) => a.textContent.length - b.textContent.length)[0];
+    const btn = card?.querySelector('.wp-block-button__link, .add_to_cart_button, button');
+    return btn ? btn.textContent.trim() : '';
+  });
+  record('Produktübersicht', 'Warenkorb-Schaltfläche direkt in der Übersicht', !!listButton, listButton ? `„${listButton}“` : 'keine', true);
+  await checkNoticeAtPrice('Produktübersicht', page, { anchor: '.wc-block-components-product-price, .wp-block-woocommerce-product-price, .price', label: 'direkt unter dem Preis der Produktkarte', scopeText: '[DEMO] Einfaches Produkt' });
+  await checkNoTaxShown('Produktübersicht', page);
+  await shot('0-uebersicht');
+
   // 1. Produktseite
   const resp = await page.goto(urls.product, { waitUntil: 'networkidle' });
   record('Produktseite', 'Demoprodukt lädt', resp?.ok() ?? false, `${urls.product} → HTTP ${resp?.status()}`);
   const pText = await page.innerText('body');
   record('Produktseite', 'Titel „[DEMO] Einfaches Produkt“', pText.includes('[DEMO] Einfaches Produkt'));
   record('Produktseite', 'Preis 19,90 €', /19,90\s*€/.test(pText));
-  await checkTaxTexts('Produktseite', page);
+  await checkNoticeAtPrice('Produktseite', page, { anchor: 'main .wp-block-woocommerce-product-price', label: 'direkt unter dem Preis' });
+  await checkNoTaxShown('Produktseite', page);
   await shot('1-produkt');
 
   // 2. Warenkorb
@@ -111,7 +155,8 @@ try {
   }
   record('Warenkorb', 'Demoprodukt im Warenkorb', cText.includes('[DEMO] Einfaches Produkt'));
   record('Warenkorb', 'Summe 19,90 €', /19,90\s*€/.test(cText));
-  await checkTaxTexts('Warenkorb', page);
+  await checkNoticeAtPrice('Warenkorb', page, { anchor: '.wc-block-components-totals-footer-item, .order-total', label: 'beim Gesamtbetrag', maxGap: 60 });
+  await checkNoTaxShown('Warenkorb', page);
   await shot('2-warenkorb');
 
   // 3. Kasse
@@ -119,7 +164,8 @@ try {
   await page.waitForSelector('.wc-block-checkout, form.checkout', { timeout: 30000 }).catch(() => {});
   const isBlock = (await page.locator('.wc-block-checkout').count()) > 0;
   record('Kasse', 'Kasse lädt', isBlock || (await page.locator('form.checkout').count()) > 0, isBlock ? 'Block-Kasse' : 'klassische Kasse');
-  await checkTaxTexts('Kasse', page);
+  await checkNoticeAtPrice('Kasse', page, { anchor: '.wc-block-components-totals-footer-item, .order-total', label: 'beim Gesamtbetrag', maxGap: 60 });
+  await checkNoTaxShown('Kasse', page);
 
   const data = { email: 'ci-test@pawline.test', first: 'CI', last: 'Testkunde', street: 'Teststraße 1', zip: '10115', city: 'Berlin', phone: '030000000' };
   const missing = [];
@@ -188,7 +234,8 @@ try {
     const oText = await page.innerText('body');
     record('Bestellabschluss', 'Bestellbestätigung angezeigt', true, page.url().replace(/key=[^&]+/, 'key=…'));
     record('Bestellabschluss', 'Bestellbestätigung nennt Produkt und Summe', oText.includes('[DEMO] Einfaches Produkt') && /19,90\s*€/.test(oText));
-    await checkTaxTexts('Bestellbestätigung', page);
+    await checkNoticeAtPrice('Bestellbestätigung', page, { anchor: '.wp-block-woocommerce-order-confirmation-totals tr, .woocommerce-order-overview__total, .woocommerce-table--order-details tfoot tr', rowText: '^\\s*(Gesamt|Total)', label: 'beim Gesamtbetrag', maxGap: 80 });
+    await checkNoTaxShown('Bestellbestätigung', page);
     await shot('4-bestaetigung');
   }
 } catch (e) {

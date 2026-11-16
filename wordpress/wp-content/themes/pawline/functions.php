@@ -52,3 +52,26 @@ function pawline_register_pattern_categories() {
 		)
 	);
 }
+
+add_filter( 'render_block_woocommerce/order-confirmation-totals', 'pawline_order_confirmation_small_business_notice', 10, 1 );
+/**
+ * Bestellbestätigung (Block-Theme): Germanized-Kleinunternehmerhinweis direkt unter den Summen.
+ *
+ * Germanized gibt den Hinweis im Warenkorb, in der Kasse und in E-Mails selbst aus, im Block
+ * „Bestellbestätigung – Summen“ aber nicht. Hier wird nur Germanizeds eigene Vorlage
+ * (global/small-business-info.php, Text aus den Germanized-Einstellungen) angehängt –
+ * keine eigene Steuerlogik, und nur wenn Germanized die Kleinunternehmerregelung meldet.
+ *
+ * @param string $content Gerendertes Block-HTML.
+ * @return string
+ */
+function pawline_order_confirmation_small_business_notice( $content ) {
+	if ( '' === trim( (string) $content ) || ! function_exists( 'wc_gzd_is_small_business' ) || ! wc_gzd_is_small_business() ) {
+		return $content;
+	}
+	$notice = wc_get_template_html( 'global/small-business-info.php' ); // Germanized löst die Vorlage selbst auf (wie im Mini-Warenkorb).
+	if ( '' === trim( $notice ) ) {
+		return $content;
+	}
+	return $content . '<div class="pawline-order-total-notice">' . $notice . '</div>';
+}

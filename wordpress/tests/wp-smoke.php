@@ -107,9 +107,10 @@ foreach ( array( 'front-page', 'single-product', 'archive-product', 'page-cart',
 	}
 }
 $registry = WP_Block_Type_Registry::get_instance();
-foreach ( array( 'woocommerce/product-collection', 'woocommerce/product-template', 'woocommerce/product-image-gallery', 'woocommerce/add-to-cart-form', 'woocommerce/product-categories', 'woocommerce/mini-cart', 'woocommerce/breadcrumbs', 'woocommerce/catalog-sorting', 'woocommerce/product-results-count', 'woocommerce/product-sku', 'woocommerce/product-details' ) as $block ) {
+foreach ( array( 'woocommerce/product-collection', 'woocommerce/product-template', 'woocommerce/product-image-gallery', 'woocommerce/add-to-cart-form', 'woocommerce/product-categories', 'woocommerce/mini-cart', 'woocommerce/breadcrumbs', 'woocommerce/catalog-sorting', 'woocommerce/product-results-count', 'woocommerce/product-sku', 'woocommerce/product-details', 'woocommerce-germanized/product-tax-info', 'woocommerce/order-confirmation-totals' ) as $block ) {
 	$t( "Block registriert: {$block}", $registry->is_registered( $block ) );
 }
+$t( 'Theme hängt Germanized-Hinweis an die Bestellsummen (Filter registriert)', false !== has_filter( 'render_block_woocommerce/order-confirmation-totals', 'pawline_order_confirmation_small_business_notice' ) );
 foreach ( array( 'pawline/hero', 'pawline/kategorien', 'pawline/neue-produkte', 'pawline/vorteile', 'pawline/text-bild', 'pawline/kontakt', 'pawline/rechtstext-platzhalter' ) as $pattern ) {
 	$t( "Muster registriert: {$pattern}", WP_Block_Patterns_Registry::get_instance()->is_registered( $pattern ) );
 }
