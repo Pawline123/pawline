@@ -6,7 +6,7 @@ Bitte nach jeder Prüfung aktualisieren. Nur eintragen, was tatsächlich ausgef�
 
 **Umgebung:** GitHub-Runner `ubuntu-24.04`, Docker-Testumgebung aus `docker-compose.yml` (Apache, PHP 8.3, MariaDB 11.4, Mailpit), Chromium über Playwright 1.49.1.
 **Installiert durch `setup-wp.sh`:** WordPress (aktuell), WooCommerce 11.3.0, Germanized 4.1.7, ATUM 2.0.7, WooCommerce Stripe Gateway 11.2.0, Theme `pawline` 0.1.0, Plugin `pawline-dropship` 0.1.0. **Nicht installiert:** Germanized Pro (Lizenz fehlt).
-**Aktueller Stand:** Lauf 9, https://github.com/Pawline123/pawline/actions/runs/43843734590 – alle Schritte grün, Kaufablauf 32 ok / 1 Warnung (Rechnungsanhang ohne Germanized Pro) / 0 Fehler. Erster vollständig grüner Lauf: Lauf 6.
+**Aktueller Stand:** Lauf 12 (Commit 7eb02e5) – alle Schritte grün, einschließlich Handy-Ansicht, Verwaltung und Editor. Screenshots jedes Laufs: Branch `ci-screenshots` (https://github.com/Pawline123/pawline/tree/ci-screenshots). Erster vollständig grüner Lauf: Lauf 6.
 **Alle Läufe:** https://github.com/Pawline123/pawline/actions/workflows/wordpress.yml – Bericht je Lauf in der Job-Zusammenfassung, Screenshots/Protokolle im Artefakt `wordpress-testergebnisse`.
 
 ### ✅ In WordPress geprüft (automatisch)
@@ -41,12 +41,54 @@ Gastbestellung „[DEMO] Einfaches Produkt“ mit der **nur in der CI** aktivier
 
 **Umsetzung:** Produktseite und alle Produktlisten (Shop, Kategorie, Schlagwort, Suche, Muster „Neue Produkte“) enthalten den Germanized-Block „Steuerhinweis“ (`woocommerce-germanized/product-tax-info`) direkt unter dem Preisblock. In der Bestellbestätigung gibt Germanized im Block-Theme selbst nichts aus; das Theme hängt dort Germanizeds Vorlage `global/small-business-info.php` an den Block „Bestellbestätigung – Summen“ (`functions.php`, nur wenn `wc_gzd_is_small_business()`). Keine eigene Steuerlogik. Warenkorb, Kasse und E-Mail: Germanized selbst.
 
+### ✅ Handy-Ansicht (`tests/e2e/mobile.mjs`, iPhone 13, 390 × 844) – Lauf 12
+
+| Seite | Ergebnis |
+|---|---|
+| Startseite | kein seitliches Scrollen, Grundschrift 17 px, Menü (☰) öffnet: Kasse · Kontakt · Mein Konto · Shop · Warenkorb |
+| Produktübersicht | kein seitliches Scrollen; „In den Warenkorb“ 160 × 78 px; § 19-Hinweis und „zzgl. Versandkosten“ unter dem Preis |
+| Produktseite | kein seitliches Scrollen; „In den Warenkorb“ 191 × 51 px; § 19-Hinweis und „zzgl. Versandkosten“ unter dem Preis |
+| Warenkorb | „Weiter zur Kasse“ 342 × 51 px; § 19-Hinweis unter der Gesamtsumme |
+| Kasse | „Jetzt kaufen“ 342 × 48 px; § 19-Hinweis 46 px unter „Bestellübersicht 19,90 €“ (Lauf 11 noch Fehler: WooCommerce klappt die Übersicht auf dem Handy zu → behoben, siehe Befunde) |
+
+**Gestalterische Beobachtungen (nicht geändert, Entscheidung offen):** Konto-/Warenkorb-Symbol stehen auf dem Handy in einer eigenen Zeile links statt neben dem Menü; ca. 70 px Leerraum zwischen Kopfbereich und Brotkrumen; der lange Germanized-Text bricht in zweispaltigen Produktkarten auf vier Zeilen um (kürzerer Text in den Germanized-Einstellungen möglich); auf der Startseite fehlen bei „Neu im Shop“ die Bildflächen, solange Produkte kein Bild haben.
+
+### ✅ Verwaltung (`tests/e2e/admin.mjs` + `tests/ci/verify-admin.php`) – Lauf 11/12
+
+| Schritt | Ergebnis |
+|---|---|
+| Pawline › Überblick | bezahlte Testbestellung unter „Beim Lieferanten bestellen“; „Lieferantenauftrag erfassen“ füllt die Bestellnummer vor |
+| Lieferantenauftrag | gespeichert (Lieferant, Auftragsnr., 8,50, Status „bestellt“, Datum), mit Bestellung verknüpft, Bestellnotiz, Änderungsprotokoll |
+| Eingangsbeleg | PDF + XML hochgeladen, dem Auftrag zugeordnet, beide „✔ unverändert“, Dateien in `/var/pawline-private` (außerhalb Webroot), Download als Admin liefert die Originaldatei |
+| Getarnte PHP-Datei (T-20) | abgelehnt mit Hinweis „Nur PDF, XML (E-Rechnung), JPG oder PNG …“ |
+| Tracking in der Bestellung | gespeichert, Bestellnotiz „Versandinfo erfasst“, **keine** Kundenbenachrichtigung |
+| Auswertung | Rohdifferenz mit Grundlage (§ 19), keine Bezeichnung „Gewinn“ |
+| CSV-Export | Lieferantenaufträge und Eingangsbelege: UTF-8 mit BOM, Semikolon, Betrag „8,50“, SHA-256 |
+
+Hinweis: Nach der ersten Anmeldung leitet Germanized auf seinen Einrichtungsassistenten weiter (`wc-gzd-setup`); harmlos, beim echten Setup einmal durchklicken.
+
+### ✅ WordPress-Editor (`tests/e2e/editor.mjs`) – Lauf 11/12
+
+| Prüfung | Ergebnis |
+|---|---|
+| Website-Editor: alle 13 Vorlagen + Template-Teile header/footer | **0 ungültige Blöcke**, kein fehlender Blocktyp, keine Validierungsmeldung in der Konsole |
+| Alle 7 Pawline-Muster in eine Seite eingefügt, gespeichert, neu geladen | alle Blöcke gültig |
+| Seite bearbeiten: Titel/Absatz getippt, Bild in die Mediathek hochgeladen und eingefügt, Spalten-Layout, Block verschoben | gespeichert, neu geladen: alle gültig; im Frontend sichtbar |
+| Startseiten-Vorlage im Website-Editor geändert | gespeichert, gültig, auf der Startseite sichtbar |
+
+### ✅ Seitentitel
+
+Warenkorb (`/warenkorb/`), Kasse (`/kasse/`), Mein Konto (`/mein-konto/`), Shop; Beispielseite gelöscht (`setup-wp.sh`, geprüft in `wp-smoke.php`).
+
 ### ⚠️ Befunde
 
 | Befund | Bewertung / nächster Schritt |
 |---|---|
+| ~~Produktübersicht: § 19-Hinweis doppelt (Theme-Block + Germanized-Listenausgabe unter der Schaltfläche)~~ | Behoben: Germanized-Listenausgabe für Steuer- und Versandhinweis aus (`woocommerce_gzd_display_product_loop_tax/_shipping_costs = no`), stattdessen Germanized-Blöcke direkt unter dem Preis; Test prüft „genau einmal je Karte“. |
+| ~~Produktseite ohne „zzgl. Versandkosten“~~ | Behoben: Germanized-Block „Versandkostenhinweis“ unter dem Preis; Test prüft den Abstand. |
+| ~~Kasse auf dem Handy: § 19-Hinweis nur im Fußbereich~~ | Behoben (Lauf 12): Germanized-Vorlage zwischen zugeklappter Bestellübersicht und „Jetzt kaufen“, nur bei schmaler Ansicht (`functions.php`, `style.css`). |
 | ~~§ 19-Hinweis auf Produktseite und Bestellbestätigung nur im Fußbereich~~ | **Behoben in Lauf 9**: jetzt direkt am Preis bzw. Gesamtbetrag (siehe oben). Wortlaut stammt aus Germanized (Einstellungen › Germanized › Allgemein › Kleinunternehmerregelung) und kann dort angepasst werden, z. B. „Umsatzsteuerbefreit gemäß § 19 UStG.“ |
-| Seitentitel der WooCommerce-Seiten auf Englisch („Cart“, „Checkout“, „My account“), Beispielseite „Sample Page“ vorhanden | Kosmetik der Testinstallation; bei der Einrichtung auf dem Hosting deutsche Titel setzen, Beispielseite löschen. |
+| ~~Seitentitel auf Englisch, Beispielseite vorhanden~~ | Behoben in `setup-wp.sh`. |
 | Fehler der ersten Läufe | `wp wc product_cat create` scheitert unter WooCommerce 11.3 („Fehlende(r) Parameter: name“) → Demodaten nutzen jetzt die WooCommerce-PHP-API. Doppelte `WP_DEBUG`-Definition → behoben. Übrige Fehler lagen im Testskript (Warten auf geladene Blöcke). |
 
 ### ⏸️ Weiterhin NICHT geprüft
@@ -57,8 +99,8 @@ Gastbestellung „[DEMO] Einfaches Produkt“ mit der **nur in der CI** aktivier
 | Storno-/Korrekturbelege (T-11) | Germanized Pro fehlt |
 | Stripe-Zahlungen, abgelehnte Karte, Webhooks (T-06, T-12) | Keine Stripe-Testschlüssel; im Test nur Offline-Zahlart |
 | Versandkosten | Keine echten Versandregeln festgelegt |
-| Website-Editor (ungültige Blöcke), Handy-Ansicht, Gestaltung (T-01 bis T-03) | Manuelle Prüfung |
-| Plugin-Abläufe im Backend: Lieferantenauftrag, Belegupload über das Formular, Tracking, Auswertung, CSV (T-13 bis T-25) | Noch nicht automatisiert; manuelle Prüfung |
+| Gestalterische Feinheiten (Farben, Abstände) | Screenshots liegen vor; Entscheidung durch Tim |
+| Plugin-Sonderfälle: ein Auftrag für mehrere Bestellungen, ungültige Eingaben, Löschschutz, Bestandswarnung (T-15, T-16, T-21, T-23) | Noch nicht automatisiert |
 | PowerShell-Skript `pawline.ps1` | Nur unter Windows prüfbar |
 | Hosting-Server (nginx/Apache, echte `wp-config.php`) | Nur Docker-Testumgebung |
 

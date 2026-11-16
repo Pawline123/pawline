@@ -43,7 +43,7 @@ docker compose --profile tools run --rm wpcli php /project/tests/run.php
 ## Offene Aufgaben für die erste Sitzung auf dem PC
 
 1. `pruefen`, `start`, `setup`, `demo`, `test` auf dem PC ausführen (in GitHub Actions bereits grün, siehe `docs/TESTSTATUS.md`); Ergebnisse in `docs/TESTSTATUS.md` eintragen.
-2. Website-Editor öffnen: Jede Vorlage und jedes Muster auf „Dieser Block enthält unerwarteten oder ungültigen Inhalt“ prüfen; ggf. Markup an die installierte WooCommerce-Version anpassen.
+2. ~~Website-Editor auf ungültige Blöcke prüfen~~ – automatisiert (`tests/e2e/editor.mjs`, Lauf 11/12: 0 ungültige Blöcke). Nach WooCommerce-Updates erneut laufen lassen.
 3. **Produktfilter** in `archive-product.html` ergänzen (Block „Produktfilter“ der installierten WooCommerce-Version im Editor einfügen, exportieren, Datei übernehmen). Bewusst noch nicht enthalten, weil sich das Markup zwischen WC-Versionen ändert.
 4. ~~Germanized-Optionsname bestätigen~~ – erledigt: `woocommerce_gzd_small_enterprise` wirkt in Germanized 4.1.7 (GitHub Actions, 16.11.2026). Im Backend trotzdem einmal ansehen.
 5. ~~§ 19-Hinweis am Preis~~ – erledigt (Lauf 9): Germanized-Block „Steuerhinweis“ unter jedem Preis (Produktseite, alle Listen), Germanized-Vorlage unter den Summen der Bestellbestätigung (`functions.php`). Neue Preis-/Summenblöcke immer mit diesem Block ergänzen; `checkout.mjs` prüft den Abstand.
