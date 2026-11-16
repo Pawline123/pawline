@@ -112,6 +112,16 @@ jobs:
         if: ${{ !cancelled() && steps.prepare.outcome == 'success' }}
         run: $WP wp eval-file /project/tests/ci/verify-order.php 2>&1 | tee test-results/order.log
 
+      - name: Demodaten entfernen (T-27)
+        id: demoremove
+        if: ${{ !cancelled() && steps.demo.outcome == 'success' }}
+        run: |
+          $WP sh /project/scripts/demo-remove.sh 2>&1 | tee test-results/demo-remove.log
+          left=$($WP wp post list --post_type=product,product_variation --meta_key=_pawline_demo --meta_value=1 --post_status=any --format=count)
+          echo "Verbleibende Demo-Produkte: $left"
+          test "$left" = 0
+          test -z "$($WP wp term list product_cat --slug=demo-kategorie --field=term_id)"
+
       - name: Bericht erstellen
         if: ${{ !cancelled() }}
         env:
@@ -125,7 +135,8 @@ jobs:
             "Block-Prüfung":"${{ steps.blocks.outcome }}",
             "Kaufablauf vorbereiten":"${{ steps.prepare.outcome }}",
             "Kaufablauf im Browser":"${{ steps.checkout.outcome }}",
-            "Bestellung prüfen":"${{ steps.order.outcome }}"}
+            "Bestellung prüfen":"${{ steps.order.outcome }}",
+            "Demodaten entfernen (T-27)":"${{ steps.demoremove.outcome }}"}
         run: node tests/ci/report.mjs >> "$GITHUB_STEP_SUMMARY"
 
       - name: Protokolle sammeln
@@ -145,7 +156,7 @@ jobs:
         if: ${{ !cancelled() }}
         run: |
           failed=0
-          for o in "${{ steps.up.outcome }}" "${{ steps.setup.outcome }}" "${{ steps.activation.outcome }}" "${{ steps.demo.outcome }}" "${{ steps.unit.outcome }}" "${{ steps.smoke.outcome }}" "${{ steps.blocks.outcome }}" "${{ steps.prepare.outcome }}" "${{ steps.checkout.outcome }}" "${{ steps.order.outcome }}"; do
+          for o in "${{ steps.up.outcome }}" "${{ steps.setup.outcome }}" "${{ steps.activation.outcome }}" "${{ steps.demo.outcome }}" "${{ steps.unit.outcome }}" "${{ steps.smoke.outcome }}" "${{ steps.blocks.outcome }}" "${{ steps.prepare.outcome }}" "${{ steps.checkout.outcome }}" "${{ steps.order.outcome }}" "${{ steps.demoremove.outcome }}"; do
             [ "$o" = success ] || failed=1
           done
           exit $failed

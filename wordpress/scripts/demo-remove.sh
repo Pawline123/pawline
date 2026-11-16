@@ -1,10 +1,18 @@
 #!/bin/sh
-# Entfernt alle mit _pawline_demo=1 markierten Produkte und die Demo-Kategorie.
+# Entfernt alle mit _pawline_demo=1 markierten Produkte (inkl. Varianten) und die Demo-Kategorie.
 set -eu
-IDS=$(wp post list --post_type=product --meta_key=_pawline_demo --meta_value=1 --post_status=any --format=ids)
-for id in $IDS; do
-  wp wc product delete "$id" --user="$WP_ADMIN_USER" --force=true >/dev/null && echo "gelöscht: Produkt $id"
-done
-CAT=$(wp term list product_cat --slug=demo-kategorie --field=term_id)
-[ -n "$CAT" ] && wp term delete product_cat "$CAT"
-echo "Demodaten entfernt."
+wp eval '
+$ids = get_posts( array( "post_type" => array( "product", "product_variation" ), "meta_key" => "_pawline_demo", "meta_value" => "1", "post_status" => "any", "fields" => "ids", "posts_per_page" => -1 ) );
+foreach ( $ids as $id ) {
+	$p = wc_get_product( $id );
+	if ( $p && $p->delete( true ) ) {
+		echo "gelöscht: {$id}\n";
+	}
+}
+$t = get_term_by( "slug", "demo-kategorie", "product_cat" );
+if ( $t ) {
+	wp_delete_term( $t->term_id, "product_cat" );
+	echo "gelöscht: Demo-Kategorie\n";
+}
+echo "Demodaten entfernt.\n";
+'

@@ -32,9 +32,10 @@ services:
       WORDPRESS_DB_NAME: pawline
       WORDPRESS_DB_USER: pawline
       WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      # WP_DEBUG setzt das Image über WORDPRESS_DEBUG (doppelte Definition erzeugt Warnungen).
+      WORDPRESS_DEBUG: "1"
       WORDPRESS_CONFIG_EXTRA: |
         define( 'WP_ENVIRONMENT_TYPE', 'local' );
-        define( 'WP_DEBUG', true );
         define( 'WP_DEBUG_LOG', true );
         define( 'WP_DEBUG_DISPLAY', false );
         define( 'DISALLOW_FILE_EDIT', true );
