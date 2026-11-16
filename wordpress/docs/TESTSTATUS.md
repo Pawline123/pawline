@@ -6,7 +6,7 @@ Bitte nach jeder Prüfung aktualisieren. Nur eintragen, was tatsächlich ausgef�
 
 **Umgebung:** GitHub-Runner `ubuntu-24.04`, Docker-Testumgebung aus `docker-compose.yml` (Apache, PHP 8.3, MariaDB 11.4, Mailpit), Chromium über Playwright 1.49.1.
 **Installiert durch `setup-wp.sh`:** WordPress (aktuell), WooCommerce 11.3.0, Germanized 4.1.7, ATUM 2.0.7, WooCommerce Stripe Gateway 11.2.0, Theme `pawline` 0.1.0, Plugin `pawline-dropship` 0.1.0. **Nicht installiert:** Germanized Pro (Lizenz fehlt).
-**Erster vollständig grüner Lauf:** Lauf 6, https://github.com/Pawline123/pawline/actions/runs/43839938399 (alle Schritte erfolgreich).
+**Aktueller Stand:** Lauf 9, https://github.com/Pawline123/pawline/actions/runs/43843734590 – alle Schritte grün, Kaufablauf 32 ok / 1 Warnung (Rechnungsanhang ohne Germanized Pro) / 0 Fehler. Erster vollständig grüner Lauf: Lauf 6.
 **Alle Läufe:** https://github.com/Pawline123/pawline/actions/workflows/wordpress.yml – Bericht je Lauf in der Job-Zusammenfassung, Screenshots/Protokolle im Artefakt `wordpress-testergebnisse`.
 
 ### ✅ In WordPress geprüft (automatisch)
@@ -26,21 +26,26 @@ Bitte nach jeder Prüfung aktualisieren. Nur eintragen, was tatsächlich ausgef�
 
 Gastbestellung „[DEMO] Einfaches Produkt“ mit der **nur in der CI** aktivierten Offline-Zahlart „Überweisung (nur CI-Test)“ und „Versand (nur CI-Test)“ ohne Kosten.
 
-| Schritt | Ergebnis |
+**§ 19-Prüfung (seit Lauf 9 streng):** Der Hinweis muss geometrisch direkt beim Preis bzw. Gesamtbetrag stehen (gleiche Spalte, max. 48 px unter dem Preis, 60–80 px unter der Gesamtsumme). Treffer im Kopf- oder Fußbereich zählen **nie**; steht der Hinweis nur dort, schlägt der Test fehl. Text überall aus Germanized: „Kein Mehrwertsteuerausweis, da Kleinunternehmer nach §19 (1) UStG.“
+
+| Schritt | Ergebnis (Lauf 9) |
 |---|---|
-| Produktseite | lädt, Preis 19,90 €, kein USt-Ausweis |
-| Warenkorb | Produkt + 19,90 €; Germanized-Hinweis „Kein Mehrwertsteuerausweis, da Kleinunternehmer nach §19 (1) UStG.“ |
-| Kasse (Block-Kasse) | Germanized-Hinweis, Pflichtfelder, Zahlart, AGB/Widerruf-Bestätigung, Summe 19,90 €, Schaltfläche „Jetzt kaufen“ |
-| Bestellabschluss | Weiterleitung zur Bestellbestätigung mit Produkt und Summe |
+| Produktübersicht (Shop) | Demoprodukt mit 19,90 € und Schaltfläche „In den Warenkorb“ in der Karte; **§ 19-Hinweis 12 px unter dem Preis** der Karte; kein USt-Ausweis |
+| Produktseite | Preis 19,90 €; **§ 19-Hinweis 20 px unter dem Preis**; kein USt-Ausweis |
+| Warenkorb | Produkt + 19,90 €; **§ 19-Hinweis 46 px unter „Veranschlagte Gesamtsumme 19,90 €“** |
+| Kasse (Block-Kasse) | **§ 19-Hinweis 32 px unter „Gesamtsumme“**; Pflichtfelder, Zahlart, AGB/Widerruf-Bestätigung, Summe 19,90 €, Schaltfläche „Jetzt kaufen“ |
+| Bestellbestätigung | Produkt + Summe; **§ 19-Hinweis 18 px unter „Gesamt: 19,90 €“** |
 | Bestell-E-Mail (Mailpit) | „Bestätigung deiner Bestellung …“, mit Germanized-Hinweis, kein USt-Ausweis |
 | Bestellung in der DB (`tests/ci/verify-order.php`) | Status „In Wartestellung“, 19,90 EUR, Steuerbetrag 0, keine Steuerposten |
 | JavaScript-Fehler im Browser | keine |
+
+**Umsetzung:** Produktseite und alle Produktlisten (Shop, Kategorie, Schlagwort, Suche, Muster „Neue Produkte“) enthalten den Germanized-Block „Steuerhinweis“ (`woocommerce-germanized/product-tax-info`) direkt unter dem Preisblock. In der Bestellbestätigung gibt Germanized im Block-Theme selbst nichts aus; das Theme hängt dort Germanizeds Vorlage `global/small-business-info.php` an den Block „Bestellbestätigung – Summen“ (`functions.php`, nur wenn `wc_gzd_is_small_business()`). Keine eigene Steuerlogik. Warenkorb, Kasse und E-Mail: Germanized selbst.
 
 ### ⚠️ Befunde
 
 | Befund | Bewertung / nächster Schritt |
 |---|---|
-| Auf **Produktseite** und **Bestellbestätigung** zeigt Germanized im Block-Theme keinen eigenen § 19-Hinweis; sichtbar ist dort nur der feste Text im Fußbereich des Themes („Gemäß § 19 UStG wird keine Umsatzsteuer berechnet und ausgewiesen.“) | Hinweis ist auf jeder Seite vorhanden, aber nicht am Preis. Mit Tim klären, ob das genügt; sonst Germanized-Einstellung/-Block für Preisangaben im Website-Editor ergänzen (keine eigene Steuerlogik). Offene Aufgabe 5 in `CLAUDE.md`. |
+| ~~§ 19-Hinweis auf Produktseite und Bestellbestätigung nur im Fußbereich~~ | **Behoben in Lauf 9**: jetzt direkt am Preis bzw. Gesamtbetrag (siehe oben). Wortlaut stammt aus Germanized (Einstellungen › Germanized › Allgemein › Kleinunternehmerregelung) und kann dort angepasst werden, z. B. „Umsatzsteuerbefreit gemäß § 19 UStG.“ |
 | Seitentitel der WooCommerce-Seiten auf Englisch („Cart“, „Checkout“, „My account“), Beispielseite „Sample Page“ vorhanden | Kosmetik der Testinstallation; bei der Einrichtung auf dem Hosting deutsche Titel setzen, Beispielseite löschen. |
 | Fehler der ersten Läufe | `wp wc product_cat create` scheitert unter WooCommerce 11.3 („Fehlende(r) Parameter: name“) → Demodaten nutzen jetzt die WooCommerce-PHP-API. Doppelte `WP_DEBUG`-Definition → behoben. Übrige Fehler lagen im Testskript (Warten auf geladene Blöcke). |
 
