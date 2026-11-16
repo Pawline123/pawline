@@ -1,0 +1,140 @@
+[
+  {
+    "area": "Anmeldung",
+    "name": "Verwaltung erreichbar",
+    "status": "ok",
+    "detail": "/wp-admin/admin.php?page=wc-gzd-setup"
+  },
+  {
+    "area": "Überblick",
+    "name": "Bestellung #28 unter „Beim Lieferanten bestellen“",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Überblick",
+    "name": "„Lieferantenauftrag erfassen“ vorhanden",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Lieferantenauftrag",
+    "name": "Bestellnummer vorbefüllt",
+    "status": "ok",
+    "detail": "28"
+  },
+  {
+    "area": "Lieferantenauftrag",
+    "name": "gespeichert",
+    "status": "ok",
+    "detail": "LA-29; Titel: –"
+  },
+  {
+    "area": "Lieferantenauftrag",
+    "name": "Betrag 8,50 und Status übernommen",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Lieferantenauftrag",
+    "name": "Änderungsprotokoll-Eintrag",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Eingangsbeleg",
+    "name": "Upload-Feld vorhanden (Ablage sicher konfiguriert)",
+    "status": "ok",
+    "detail": "Die Verbindung wurde unterbrochen. Das Speichern wurde deaktiviert, bis die Verbindung wiederhergestellt ist. Dieser Beitrag wird sicherheitshalber in deinem Browser gesichert. | Das Backup dieses Beitrags in deinem Browser unterscheidet sich von der unten stehenden Version.Backup wiederherstellenDies ersetzt den aktuellen Editor-Inhalt durch die zuletzt gespeicherte Version. Du kannst im Editor „Rückgängig machen“ oder „Wiederherstellen“ verwenden, um den vorherigen Inhalt zurückzuholen oder zu der wiederhergestellten Version zurückzukehren.Diesen Hinweis verwerfen"
+  },
+  {
+    "area": "Eingangsbeleg",
+    "name": "gespeichert",
+    "status": "ok",
+    "detail": "ER-30"
+  },
+  {
+    "area": "Eingangsbeleg",
+    "name": "PDF und XML abgelegt, Prüfsumme „unverändert“",
+    "status": "ok",
+    "detail": "2× „unverändert“; Hinweise: Der Beitrag wurde veröffentlicht. Diesen Hinweis verwerfen | Die Verbindung wurde unterbrochen. Das Speichern wurde deaktiviert, bis die Verbindung wiederhergestellt ist. Dieser Beitrag wird sicherheitshalber in deinem Browser gesichert. | Das Backup dieses Beitrags in deinem Browser unterscheidet sich von der unten stehenden Version.Backup wiederherstellenDies ersetzt den aktuellen Editor-Inhalt durch die zuletzt gespeicherte Version. Du kannst im Editor „Rückgängig machen“ oder „Wiederherstellen“ verwenden, um den vorherigen Inhalt zurückzuholen oder zu der wiederhergestellten Version zurückzukehren.Diesen Hinweis verwerfen"
+  },
+  {
+    "area": "Eingangsbeleg",
+    "name": "Download als Admin liefert die Originaldatei",
+    "status": "ok",
+    "detail": "DEMO-Rechnung.pdf, beginnt mit „%PDF-“"
+  },
+  {
+    "area": "Eingangsbeleg",
+    "name": "Getarnte PHP-Datei abgelehnt (T-20)",
+    "status": "ok",
+    "detail": "„DEMO-getarnt.pdf“: Nur PDF, XML (E-Rechnung), JPG oder PNG mit passendem Inhalt sind erlaubt. Diesen Hinweis verwerfen | Der Beitrag wurde veröffentlicht. Dies"
+  },
+  {
+    "area": "Bestellung",
+    "name": "Pawline-Box „Dropshipping“ sichtbar",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Bestellung",
+    "name": "Lieferantenauftrag LA-29 in der Bestellung angezeigt",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Bestellung",
+    "name": "Tracking gespeichert",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Bestellung",
+    "name": "Bestellnotiz „Versandinfo erfasst“",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Auswertung",
+    "name": "lädt mit Rohdifferenz und Grundlage",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Auswertung",
+    "name": "Wort „Gewinn“ nicht als Ergebnis verwendet",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "CSV-Export",
+    "name": "Lieferantenaufträge als CSV: Datei pawline-purchases-2026-11-15-2026-11-17.csv",
+    "status": "ok",
+    "detail": "UTF-8 mit BOM, Semikolon"
+  },
+  {
+    "area": "CSV-Export",
+    "name": "Lieferantenaufträge als CSV: enthält DEMO-LA-0001 mit Betrag 8,50",
+    "status": "ok",
+    "detail": "Auftrag;Lieferant;\"Auftragsnr. Lieferant\";Bestelldatum;\"Einkaufsbetrag brutto\";Währung;Status;Kundenbestellungen;Eingangsbelege ⏎ LA-29;\"[DEMO] Lieferant\";DEMO-LA-0001;2026-11-16;8,50;EUR;\"Beim Lieferanten bestellt\";#28;"
+  },
+  {
+    "area": "CSV-Export",
+    "name": "Eingangsbelege als CSV: Datei pawline-invoices-2026-11-15-2026-11-17.csv",
+    "status": "ok",
+    "detail": "UTF-8 mit BOM, Semikolon"
+  },
+  {
+    "area": "CSV-Export",
+    "name": "Eingangsbelege als CSV: enthält DEMO-RE-0001 mit Betrag 8,50",
+    "status": "ok",
+    "detail": "Beleg-ID;Lieferant;Rechnungsnummer;Rechnungsdatum;Netto;Umsatzsteuer;Gesamt;Währung;Steuerangabe;Lieferantenaufträge;Dateien;SHA-256 ⏎ ER-30;\"[DEMO] Lieferant\";DEMO-RE-0001;2026-11-16;7,14;1,36;8,50;EUR;\"19 % USt (DEMO)\""
+  },
+  {
+    "area": "CSV-Export",
+    "name": "Eingangsbelege: SHA-256 enthalten",
+    "status": "ok",
+    "detail": ""
+  }
+]

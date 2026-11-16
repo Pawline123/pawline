@@ -1,0 +1,158 @@
+[
+  {
+    "area": "Website-Editor",
+    "name": "Vorlage front-page: alle Blöcke gültig",
+    "status": "ok",
+    "detail": "66 Blöcke"
+  },
+  {
+    "area": "Website-Editor",
+    "name": "Vorlage index: alle Blöcke gültig",
+    "status": "ok",
+    "detail": "41 Blöcke"
+  },
+  {
+    "area": "Website-Editor",
+    "name": "Vorlage page: alle Blöcke gültig",
+    "status": "ok",
+    "detail": "32 Blöcke"
+  },
+  {
+    "area": "Website-Editor",
+    "name": "Vorlage page-wide: alle Blöcke gültig",
+    "status": "ok",
+    "detail": "31 Blöcke"
+  },
+  {
+    "area": "Website-Editor",
+    "name": "Vorlage page-cart: alle Blöcke gültig",
+    "status": "ok",
+    "detail": "32 Blöcke"
+  },
+  {
+    "area": "Website-Editor",
+    "name": "Vorlage page-checkout: alle Blöcke gültig",
+    "status": "ok",
+    "detail": "32 Blöcke"
+  },
+  {
+    "area": "Website-Editor",
+    "name": "Vorlage single-product: alle Blöcke gültig",
+    "status": "ok",
+    "detail": "44 Blöcke"
+  },
+  {
+    "area": "Website-Editor",
+    "name": "Vorlage archive-product: alle Blöcke gültig",
+    "status": "ok",
+    "detail": "56 Blöcke"
+  },
+  {
+    "area": "Website-Editor",
+    "name": "Vorlage taxonomy-product_cat: alle Blöcke gültig",
+    "status": "ok",
+    "detail": "56 Blöcke"
+  },
+  {
+    "area": "Website-Editor",
+    "name": "Vorlage taxonomy-product_tag: alle Blöcke gültig",
+    "status": "ok",
+    "detail": "56 Blöcke"
+  },
+  {
+    "area": "Website-Editor",
+    "name": "Vorlage product-search-results: alle Blöcke gültig",
+    "status": "ok",
+    "detail": "56 Blöcke"
+  },
+  {
+    "area": "Website-Editor",
+    "name": "Vorlage search: alle Blöcke gültig",
+    "status": "ok",
+    "detail": "38 Blöcke"
+  },
+  {
+    "area": "Website-Editor",
+    "name": "Vorlage 404: alle Blöcke gültig",
+    "status": "ok",
+    "detail": "33 Blöcke"
+  },
+  {
+    "area": "Website-Editor",
+    "name": "Template-Teil header: alle Blöcke gültig",
+    "status": "ok",
+    "detail": "16 Blöcke"
+  },
+  {
+    "area": "Website-Editor",
+    "name": "Template-Teil footer: alle Blöcke gültig",
+    "status": "ok",
+    "detail": "11 Blöcke"
+  },
+  {
+    "area": "Muster",
+    "name": "Pawline-Muster gefunden",
+    "status": "ok",
+    "detail": "pawline/hero, pawline/kategorien, pawline/kontakt, pawline/neue-produkte, pawline/rechtstext-platzhalter, pawline/text-bild, pawline/vorteile"
+  },
+  {
+    "area": "Muster",
+    "name": "Nach Speichern und Neuladen alle Blöcke gültig",
+    "status": "ok",
+    "detail": "45 Blöcke"
+  },
+  {
+    "area": "Bearbeiten",
+    "name": "Titel und Absatz über die Tastatur eingegeben",
+    "status": "ok",
+    "detail": "Editor-Inhalt im iframe"
+  },
+  {
+    "area": "Bearbeiten",
+    "name": "Bild in die Mediathek hochgeladen und eingefügt",
+    "status": "ok",
+    "detail": "Medien-ID 37"
+  },
+  {
+    "area": "Bearbeiten",
+    "name": "Block verschoben (Reihenfolge Absatz → Bild → Spalten)",
+    "status": "ok",
+    "detail": "core/paragraph → core/image → core/columns"
+  },
+  {
+    "area": "Bearbeiten",
+    "name": "Nach Speichern und Neuladen alle Blöcke gültig",
+    "status": "ok",
+    "detail": "9 Blöcke"
+  },
+  {
+    "area": "Bearbeiten",
+    "name": "Änderungen im Frontend sichtbar (Text, Bild, Spalten)",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Website-Editor",
+    "name": "Startseiten-Text geändert und gespeichert",
+    "status": "ok",
+    "detail": "core/heading"
+  },
+  {
+    "area": "Website-Editor",
+    "name": "Startseiten-Vorlage nach Speichern gültig",
+    "status": "ok",
+    "detail": "67 Blöcke"
+  },
+  {
+    "area": "Website-Editor",
+    "name": "Änderung auf der Startseite sichtbar",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Konsole",
+    "name": "Keine Meldungen zur Blockvalidierung",
+    "status": "ok",
+    "detail": ""
+  }
+]

@@ -1,0 +1,254 @@
+[
+  {
+    "area": "Produktübersicht",
+    "name": "Shopseite lädt",
+    "status": "ok",
+    "detail": "http://localhost:8080/shop/ → HTTP 200"
+  },
+  {
+    "area": "Produktübersicht",
+    "name": "Demoprodukt mit 19,90 € gelistet",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Produktübersicht",
+    "name": "Warenkorb-Schaltfläche direkt in der Übersicht",
+    "status": "ok",
+    "detail": "„In den Warenkorb“"
+  },
+  {
+    "area": "Produktübersicht",
+    "name": "§ 19-Hinweis direkt unter dem Preis der Produktkarte",
+    "status": "ok",
+    "detail": "„Umsatzsteuerbefreit gemäß § 19 UStG.“ (12 px darunter; Bezug: „19,90 €“)"
+  },
+  {
+    "area": "Produktübersicht",
+    "name": "„zzgl. Versandkosten“ beim Preis der Produktkarte",
+    "status": "ok",
+    "detail": "„Versandkosten“ (49 px darunter; Bezug: „19,90 €“)"
+  },
+  {
+    "area": "Produktübersicht",
+    "name": "§ 19-Hinweis genau einmal je Produktkarte",
+    "status": "ok",
+    "detail": "1× gefunden"
+  },
+  {
+    "area": "Produktübersicht",
+    "name": "Kein Umsatzsteuerausweis",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Produktübersicht",
+    "name": "Kein abweichender alter Hinweistext",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Produktseite",
+    "name": "Demoprodukt lädt",
+    "status": "ok",
+    "detail": "http://localhost:8080/product/demo-einfaches-produkt/ → HTTP 200"
+  },
+  {
+    "area": "Produktseite",
+    "name": "Titel „[DEMO] Einfaches Produkt“",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Produktseite",
+    "name": "Preis 19,90 €",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Produktseite",
+    "name": "§ 19-Hinweis direkt unter dem Preis",
+    "status": "ok",
+    "detail": "„Umsatzsteuerbefreit gemäß § 19 UStG.“ (20 px darunter; Bezug: „19,90 €“)"
+  },
+  {
+    "area": "Produktseite",
+    "name": "„zzgl. Versandkosten“ beim Preis",
+    "status": "ok",
+    "detail": "„Versandkosten“ (65 px darunter; Bezug: „19,90 €“)"
+  },
+  {
+    "area": "Produktseite",
+    "name": "Kein Umsatzsteuerausweis",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Produktseite",
+    "name": "Kein abweichender alter Hinweistext",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Warenkorb",
+    "name": "„In den Warenkorb“-Schaltfläche vorhanden",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Warenkorb",
+    "name": "Demoprodukt im Warenkorb",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Warenkorb",
+    "name": "Summe 19,90 €",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Warenkorb",
+    "name": "§ 19-Hinweis beim Gesamtbetrag",
+    "status": "ok",
+    "detail": "„Umsatzsteuerbefreit gemäß § 19 UStG.“ (46 px darunter; Bezug: „Veranschlagte Gesamtsumme19,90 €“)"
+  },
+  {
+    "area": "Warenkorb",
+    "name": "Kein Umsatzsteuerausweis",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Warenkorb",
+    "name": "Kein abweichender alter Hinweistext",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Kasse",
+    "name": "Kasse lädt",
+    "status": "ok",
+    "detail": "Block-Kasse"
+  },
+  {
+    "area": "Kasse",
+    "name": "§ 19-Hinweis beim Gesamtbetrag",
+    "status": "ok",
+    "detail": "„Umsatzsteuerbefreit gemäß § 19 UStG.“ (32 px darunter; Bezug: „Gesamtsumme“)"
+  },
+  {
+    "area": "Kasse",
+    "name": "Kein Umsatzsteuerausweis",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Kasse",
+    "name": "Kein abweichender alter Hinweistext",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Kasse",
+    "name": "Pflichtfelder ausgefüllt",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Kasse",
+    "name": "Zahlart „Überweisung (nur CI-Test)“ angeboten",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Kasse",
+    "name": "Versand „nur CI-Test“ angeboten",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Kasse",
+    "name": "Rechtliche Bestätigungen",
+    "status": "ok",
+    "detail": "angehakt: Mit deiner Bestellung erklärst du dich mit unseren Allgemeinen Geschäftsbedingungen und Widerrufsbestimmungen einverstan"
+  },
+  {
+    "area": "Kasse",
+    "name": "Summe 19,90 €",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Bestellabschluss",
+    "name": "Bestell-Schaltfläche vorhanden",
+    "status": "ok",
+    "detail": "„Jetzt kaufen“"
+  },
+  {
+    "area": "Bestellabschluss",
+    "name": "Bestellbestätigung angezeigt",
+    "status": "ok",
+    "detail": "http://localhost:8080/kasse/order-received/28/?key=…"
+  },
+  {
+    "area": "Bestellabschluss",
+    "name": "Bestellbestätigung nennt Produkt und Summe",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Bestellbestätigung",
+    "name": "§ 19-Hinweis beim Gesamtbetrag",
+    "status": "ok",
+    "detail": "„Umsatzsteuerbefreit gemäß § 19 UStG.“ (18 px darunter; Bezug: „Gesamt: 19,90 €“)"
+  },
+  {
+    "area": "Bestellbestätigung",
+    "name": "Kein Umsatzsteuerausweis",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Bestellbestätigung",
+    "name": "Kein abweichender alter Hinweistext",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Browser",
+    "name": "Keine JavaScript-Fehler",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Bestell-E-Mail",
+    "name": "E-Mail an Kunden versendet (Mailpit)",
+    "status": "ok",
+    "detail": "Betreff: „Bestätigung deiner Bestellung 28“"
+  },
+  {
+    "area": "Bestell-E-Mail",
+    "name": "Kleinunternehmerhinweis sichtbar",
+    "status": "ok",
+    "detail": "„Zahlungsart: Überweisung (nur CI-Test) Umsatzsteuerbefreit gemäß § 19 UStG. *Rechnungsadresse* CI Testkunde Teststraße“"
+  },
+  {
+    "area": "Bestell-E-Mail",
+    "name": "Kein Umsatzsteuerausweis",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Bestell-E-Mail",
+    "name": "Kein abweichender alter Hinweistext",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Bestell-E-Mail",
+    "name": "Rechnung als Anhang",
+    "status": "WARN",
+    "detail": "kein Anhang (erwartet ohne Germanized Pro)"
+  }
+]

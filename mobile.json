@@ -1,0 +1,236 @@
+[
+  {
+    "area": "Startseite",
+    "name": "lädt",
+    "status": "ok",
+    "detail": "HTTP 200"
+  },
+  {
+    "area": "Startseite",
+    "name": "Kein seitliches Scrollen",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Startseite",
+    "name": "Grundschrift ≥ 16 px",
+    "status": "ok",
+    "detail": "17 px"
+  },
+  {
+    "area": "Startseite",
+    "name": "Menü-Schaltfläche (☰) auf dem Handy",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Startseite",
+    "name": "Menü öffnet sich",
+    "status": "ok",
+    "detail": "Kasse · Kontakt · Mein Konto · Shop · Warenkorb"
+  },
+  {
+    "area": "Produktübersicht",
+    "name": "lädt",
+    "status": "ok",
+    "detail": "HTTP 200"
+  },
+  {
+    "area": "Produktübersicht",
+    "name": "Kein seitliches Scrollen",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Produktübersicht",
+    "name": "Grundschrift ≥ 16 px",
+    "status": "ok",
+    "detail": "17 px"
+  },
+  {
+    "area": "Produktübersicht",
+    "name": "§ 19-Hinweis im Inhalt sichtbar",
+    "status": "ok",
+    "detail": "„Umsatzsteuerbefreit gemäß § 19 UStG.“"
+  },
+  {
+    "area": "Produktübersicht",
+    "name": "Schaltfläche „In den Warenkorb“ gut antippbar (≥ 44 px)",
+    "status": "ok",
+    "detail": "160 × 78 px"
+  },
+  {
+    "area": "Produktübersicht",
+    "name": "Kopfbereich: Menü → Konto → Warenkorb in einer Zeile",
+    "status": "ok",
+    "detail": "Menü x=230 y=22, Konto x=278 y=22, Warenkorb x=322 y=22; Kopfhöhe 45 px"
+  },
+  {
+    "area": "Produktübersicht",
+    "name": "Kopfbereich: Tippflächen ≥ 44 × 44 px",
+    "status": "ok",
+    "detail": "Menü 44×44, Konto 44×44, Warenkorb 44×44"
+  },
+  {
+    "area": "Produktübersicht",
+    "name": "Abstand Kopfbereich → Brotkrumen 12–28 px",
+    "status": "ok",
+    "detail": "20 px"
+  },
+  {
+    "area": "Produktseite",
+    "name": "lädt",
+    "status": "ok",
+    "detail": "HTTP 200"
+  },
+  {
+    "area": "Produktseite",
+    "name": "Kein seitliches Scrollen",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Produktseite",
+    "name": "Grundschrift ≥ 16 px",
+    "status": "ok",
+    "detail": "17 px"
+  },
+  {
+    "area": "Produktseite",
+    "name": "§ 19-Hinweis im Inhalt sichtbar",
+    "status": "ok",
+    "detail": "„Umsatzsteuerbefreit gemäß § 19 UStG.“"
+  },
+  {
+    "area": "Produktseite",
+    "name": "Schaltfläche „In den Warenkorb“ gut antippbar (≥ 44 px)",
+    "status": "ok",
+    "detail": "191 × 51 px"
+  },
+  {
+    "area": "Produktseite",
+    "name": "Kopfbereich: Menü → Konto → Warenkorb in einer Zeile",
+    "status": "ok",
+    "detail": "Menü x=230 y=22, Konto x=278 y=22, Warenkorb x=322 y=22; Kopfhöhe 45 px"
+  },
+  {
+    "area": "Produktseite",
+    "name": "Kopfbereich: Tippflächen ≥ 44 × 44 px",
+    "status": "ok",
+    "detail": "Menü 44×44, Konto 44×44, Warenkorb 44×44"
+  },
+  {
+    "area": "Produktseite",
+    "name": "Abstand Kopfbereich → Brotkrumen 12–28 px",
+    "status": "ok",
+    "detail": "20 px"
+  },
+  {
+    "area": "Warenkorb",
+    "name": "Produkt im Warenkorb",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Warenkorb",
+    "name": "Kein seitliches Scrollen",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Warenkorb",
+    "name": "Grundschrift ≥ 16 px",
+    "status": "ok",
+    "detail": "17 px"
+  },
+  {
+    "area": "Warenkorb",
+    "name": "§ 19-Hinweis im Inhalt sichtbar",
+    "status": "ok",
+    "detail": "„Umsatzsteuerbefreit gemäß § 19 UStG.“"
+  },
+  {
+    "area": "Warenkorb",
+    "name": "Schaltfläche „Weiter zur Kasse“ gut antippbar (≥ 44 px)",
+    "status": "ok",
+    "detail": "342 × 51 px"
+  },
+  {
+    "area": "Warenkorb",
+    "name": "Kopfbereich: Menü → Konto in einer Zeile",
+    "status": "ok",
+    "detail": "Menü x=230 y=22, Konto x=278 y=22; Kopfhöhe 45 px"
+  },
+  {
+    "area": "Warenkorb",
+    "name": "Kopfbereich: Tippflächen ≥ 44 × 44 px",
+    "status": "ok",
+    "detail": "Menü 44×44, Konto 44×44"
+  },
+  {
+    "area": "Warenkorb",
+    "name": "Abstand Kopfbereich → Seitentitel 12–28 px",
+    "status": "ok",
+    "detail": "20 px"
+  },
+  {
+    "area": "Kasse",
+    "name": "Kein seitliches Scrollen",
+    "status": "ok",
+    "detail": ""
+  },
+  {
+    "area": "Kasse",
+    "name": "Grundschrift ≥ 16 px",
+    "status": "ok",
+    "detail": "17 px"
+  },
+  {
+    "area": "Kasse",
+    "name": "§ 19-Hinweis im Inhalt sichtbar",
+    "status": "ok",
+    "detail": "„Umsatzsteuerbefreit gemäß § 19 UStG.“"
+  },
+  {
+    "area": "Kasse",
+    "name": "Schaltfläche „Jetzt kaufen“ gut antippbar (≥ 44 px)",
+    "status": "ok",
+    "detail": "342 × 48 px"
+  },
+  {
+    "area": "Kasse",
+    "name": "Schaltfläche „E-Mail-Adresse“ gut antippbar (≥ 44 px)",
+    "status": "ok",
+    "detail": "342 × 50 px"
+  },
+  {
+    "area": "Kasse",
+    "name": "§ 19-Hinweis direkt beim Gesamtbetrag (≤ 80 px)",
+    "status": "ok",
+    "detail": "46 px unter „Bestellübersicht19,90 €“"
+  },
+  {
+    "area": "Kasse",
+    "name": "Kopfbereich: Menü → Konto in einer Zeile",
+    "status": "ok",
+    "detail": "Menü x=230 y=22, Konto x=278 y=22; Kopfhöhe 45 px"
+  },
+  {
+    "area": "Kasse",
+    "name": "Kopfbereich: Tippflächen ≥ 44 × 44 px",
+    "status": "ok",
+    "detail": "Menü 44×44, Konto 44×44"
+  },
+  {
+    "area": "Kasse",
+    "name": "Abstand Kopfbereich → Seitentitel 12–28 px",
+    "status": "ok",
+    "detail": "20 px"
+  },
+  {
+    "area": "Browser",
+    "name": "Keine JavaScript-Fehler",
+    "status": "ok",
+    "detail": ""
+  }
+]

@@ -1,0 +1,44 @@
+[
+    {
+        "area": "Bestellung (Datenbank)",
+        "name": "Bestellung vorhanden",
+        "status": "ok",
+        "detail": "#28"
+    },
+    {
+        "area": "Bestellung (Datenbank)",
+        "name": "Status „In Wartestellung“ (Überweisung, unbezahlt)",
+        "status": "ok",
+        "detail": "on-hold"
+    },
+    {
+        "area": "Bestellung (Datenbank)",
+        "name": "Summe 19,90 EUR",
+        "status": "ok",
+        "detail": "19.90 EUR"
+    },
+    {
+        "area": "Bestellung (Datenbank)",
+        "name": "Kein Steuerbetrag (§ 19 UStG)",
+        "status": "ok",
+        "detail": "0"
+    },
+    {
+        "area": "Bestellung (Datenbank)",
+        "name": "Keine Steuerposten",
+        "status": "ok",
+        "detail": ""
+    },
+    {
+        "area": "Bestellung (Datenbank)",
+        "name": "Position DEMO-001",
+        "status": "ok",
+        "detail": "DEMO-001"
+    },
+    {
+        "area": "Bestellung (Datenbank)",
+        "name": "Zahlart bacs (nur CI-Test)",
+        "status": "ok",
+        "detail": "bacs"
+    }
+]

@@ -1,0 +1,68 @@
+[
+    {
+        "area": "Verwaltung (Datenbank)",
+        "name": "Lieferantenauftrag gespeichert",
+        "status": "ok",
+        "detail": "LA-29"
+    },
+    {
+        "area": "Verwaltung (Datenbank)",
+        "name": "Lieferantenauftrag ↔ Kundenbestellung verknüpft",
+        "status": "ok",
+        "detail": "Bestellungen: 28"
+    },
+    {
+        "area": "Verwaltung (Datenbank)",
+        "name": "Eingangsbeleg gespeichert",
+        "status": "ok",
+        "detail": "ER-30"
+    },
+    {
+        "area": "Verwaltung (Datenbank)",
+        "name": "Eingangsbeleg ↔ Lieferantenauftrag verknüpft",
+        "status": "ok",
+        "detail": ""
+    },
+    {
+        "area": "Verwaltung (Datenbank)",
+        "name": "Zwei Originaldateien abgelegt (PDF + XML)",
+        "status": "ok",
+        "detail": "2 Datei(en)"
+    },
+    {
+        "area": "Verwaltung (Datenbank)",
+        "name": "Datei in geschützter Ablage, Prüfsumme ok: DEMO-Rechnung.pdf",
+        "status": "ok",
+        "detail": "\/var\/pawline-private\/2026\/8a60d574e34d9654658116f394f79772.pdf"
+    },
+    {
+        "area": "Verwaltung (Datenbank)",
+        "name": "Datei in geschützter Ablage, Prüfsumme ok: DEMO-E-Rechnung.xml",
+        "status": "ok",
+        "detail": "\/var\/pawline-private\/2026\/4a87d13d945ad7dc5e80e0ede6b78c8d.xml"
+    },
+    {
+        "area": "Verwaltung (Datenbank)",
+        "name": "Keine Belegdatei im öffentlichen Uploadordner",
+        "status": "ok",
+        "detail": ""
+    },
+    {
+        "area": "Verwaltung (Datenbank)",
+        "name": "Tracking an der Bestellung gespeichert",
+        "status": "ok",
+        "detail": "[{\"carrier\":\"DHL (DEMO)\",\"tracking\":\"DEMO00012345\",\"url\":\"\",\"date\":\"2026-11-16\"}]"
+    },
+    {
+        "area": "Verwaltung (Datenbank)",
+        "name": "Bestellnotiz zum Lieferantenauftrag\/Tracking vorhanden",
+        "status": "ok",
+        "detail": "6 Notizen"
+    },
+    {
+        "area": "Verwaltung (Datenbank)",
+        "name": "Kunde nicht automatisch benachrichtigt (keine Kundennotiz)",
+        "status": "ok",
+        "detail": ""
+    }
+]

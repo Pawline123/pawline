@@ -1,0 +1,5 @@
+{
+    "order_id": 28,
+    "order_edit": "http://localhost:8080/wp-admin/admin.php?page=wc-orders&action=edit&id=28",
+    "admin": "http://localhost:8080/wp-admin/"
+}

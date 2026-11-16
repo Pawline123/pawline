@@ -1,0 +1,6 @@
+{
+    "product": "http://localhost:8080/product/demo-einfaches-produkt/",
+    "cart": "http://localhost:8080/warenkorb/",
+    "checkout": "http://localhost:8080/kasse/",
+    "shop": "http://localhost:8080/shop/"
+}
