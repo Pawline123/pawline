@@ -1,0 +1,46 @@
+name: Codespaces-Vorschau vorbereiten
+
+on:
+  pull_request:
+    paths:
+      - '.devcontainer/**'
+      - 'wordpress/scripts/codespaces-preview.sh'
+      - 'wordpress/docker-compose*.yml'
+      - 'wordpress/tests/test_codespaces_preview.py'
+  push:
+    branches: ['codex/private-codespaces-preview']
+    paths:
+      - '.devcontainer/**'
+      - 'wordpress/scripts/codespaces-preview.sh'
+      - 'wordpress/docker-compose*.yml'
+      - 'wordpress/tests/test_codespaces_preview.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: codespaces-preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  configuration:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: JSON und Bash-Syntax prüfen
+        run: |
+          python3 -m json.tool .devcontainer/devcontainer.json > /dev/null
+          bash -n wordpress/scripts/codespaces-preview.sh
+      - name: Start, Wiederaufnahme und Zugangsdaten isoliert prüfen
+        run: python3 wordpress/tests/test_codespaces_preview.py
+      - name: Zusammengeführte Compose-Konfiguration prüfen (startet keine Container)
+        env:
+          DB_PASSWORD: configuration-check-only
+          DB_ROOT_PASSWORD: configuration-check-only
+          WP_ADMIN_PASSWORD: configuration-check-only
+          PAWLINE_PREVIEW_URL: https://configuration-check-8080.app.github.dev
+        run: docker compose -f wordpress/docker-compose.yml -f wordpress/docker-compose.codespaces.yml config --quiet

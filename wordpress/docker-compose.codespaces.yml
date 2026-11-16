@@ -1,0 +1,6 @@
+# Nur als Ergänzung zu docker-compose.yml für die private Codespaces-Vorschau.
+# Kein Live-Hosting, keine echten Zahlungszugänge.
+services:
+  wpcli:
+    environment:
+      WP_URL: ${PAWLINE_PREVIEW_URL:?Die Vorschau über scripts/codespaces-preview.sh starten}
