@@ -1,14 +1,20 @@
-# Installierte Versionen
+# Installierte Versionen (automatisch erzeugt)
 
-Wird von `scripts/setup-wp.sh` beim ersten `setup` automatisch mit den tatsächlich installierten Versionen überschrieben.
+Erzeugt: 2026-11-16T12:13Z durch scripts/setup-wp.sh
 
-Bisher festgelegt (Container-Images in `docker-compose.yml`):
+- WordPress: 7.1.4
+- PHP: 8.3.36
+- Datenbank: 11.4.13-MariaDB-ubu2404
 
-- `mariadb:11.4` (LTS-Reihe)
-- `wordpress:php8.3-apache`
-- `wordpress:cli-php8.3`
-- `axllent/mailpit:latest`
+| Plugin | Version | Status |
+|---|---|---|
+| akismet | 5.7.2 | inactive |
+| atum-stock-manager-for-woocommerce | 2.0.7 | active |
+| woocommerce-germanized | 4.1.7 | active |
+| hello | 1.7.2 | inactive |
+| pawline-dropship | 0.1.0 | active |
+| woocommerce | 11.3.0 | active |
+| woocommerce-gateway-stripe | 11.2.0 | active |
+| pawline-dev-mail |  | must-use |
 
-Plugins werden in der jeweils aktuellen stabilen Version von wordpress.org installiert: WooCommerce, Germanized for WooCommerce, ATUM Inventory Management, WooCommerce Stripe Gateway. Theme und Plugin von Pawline: 0.1.0. Mindestanforderungen: WordPress 6.6, PHP 8.1, WooCommerce 9.0.
-
-Die Image-Tags und Plugin-Versionen konnten in der Erstellungsumgebung nicht abgerufen werden (Downloads gesperrt) und sind beim ersten Setup zu bestätigen.
+Theme: pawline 0.1.0
