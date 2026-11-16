@@ -1,0 +1,15 @@
+# Zugangsdaten und Laufzeitdaten
+.env
+backups/
+private-plugins/*.zip
+*.log
+# Lokale Exporte (Shopify, Belege) gehören nicht ins Repository
+import/
+exports/
+.DS_Store
+Thumbs.db
+dist/
+# Testergebnisse und Browser-Abhängigkeiten (GitHub Actions / lokal)
+test-results/
+tests/e2e/node_modules/
+tests/e2e/package-lock.json

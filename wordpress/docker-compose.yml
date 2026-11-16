@@ -1,0 +1,85 @@
+# Pawline – lokale Testumgebung (nur für den eigenen PC, nicht für den Live-Betrieb).
+# Start unter Windows:  powershell -ExecutionPolicy Bypass -File .\scripts\pawline.ps1 start
+name: pawline
+
+services:
+  db:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: pawline
+      MARIADB_USER: pawline
+      MARIADB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD in .env setzen}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD in .env setzen}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  wordpress:
+    image: wordpress:php8.3-apache
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${WP_PORT:-8080}:80"
+    environment: &wpenv
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: pawline
+      WORDPRESS_DB_USER: pawline
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      # WP_DEBUG setzt das Image über WORDPRESS_DEBUG (doppelte Definition erzeugt Warnungen).
+      WORDPRESS_DEBUG: "1"
+      WORDPRESS_CONFIG_EXTRA: |
+        define( 'WP_ENVIRONMENT_TYPE', 'local' );
+        define( 'WP_DEBUG_LOG', true );
+        define( 'WP_DEBUG_DISPLAY', false );
+        define( 'DISALLOW_FILE_EDIT', true );
+        define( 'PAWLINE_PRIVATE_DIR', '/var/pawline-private' );
+    volumes:
+      - wp_data:/var/www/html
+      - ./wp-content/themes/pawline:/var/www/html/wp-content/themes/pawline
+      - ./wp-content/plugins/pawline-dropship:/var/www/html/wp-content/plugins/pawline-dropship
+      - ./dev/mu-plugins:/var/www/html/wp-content/mu-plugins
+      - ./config/php-uploads.ini:/usr/local/etc/php/conf.d/pawline-uploads.ini:ro
+      - private_docs:/var/pawline-private
+
+  # WP-CLI für Einrichtung, Demodaten, Tests und Sicherung (läuft nur bei Bedarf).
+  wpcli:
+    image: wordpress:cli-php8.3
+    profiles: ["tools"]
+    user: "33:33"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      <<: *wpenv
+      HOME: /tmp
+      WP_URL: http://localhost:${WP_PORT:-8080}
+      WP_ADMIN_USER: ${WP_ADMIN_USER:-pawline-admin}
+      WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD:?WP_ADMIN_PASSWORD in .env setzen}
+      WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL:-admin@pawline.test}
+    volumes:
+      - wp_data:/var/www/html
+      - ./wp-content/themes/pawline:/var/www/html/wp-content/themes/pawline
+      - ./wp-content/plugins/pawline-dropship:/var/www/html/wp-content/plugins/pawline-dropship
+      - ./dev/mu-plugins:/var/www/html/wp-content/mu-plugins
+      - private_docs:/var/pawline-private
+      - ./:/project
+    working_dir: /var/www/html
+
+  # Fängt alle E-Mails ab (Bestell-/Rechnungsmails ansehen unter http://localhost:8025).
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${MAILPIT_PORT:-8025}:8025"
+
+volumes:
+  db_data:
+  wp_data:
+  private_docs:

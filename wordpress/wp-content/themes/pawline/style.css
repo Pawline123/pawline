@@ -1,0 +1,154 @@
+/*
+Theme Name: Pawline
+Theme URI: https://pawline-shop.de
+Author: Pawline
+Description: Leichtes WooCommerce-Block-Theme für Pawline. Farben, Schriften, Abschnitte und Vorlagen sind im Website-Editor bearbeitbar.
+Version: 0.1.0
+Requires at least: 6.6
+Tested up to: 6.6
+Requires PHP: 8.1
+License: GPL-2.0-or-later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: pawline
+Tags: e-commerce, block-patterns, full-site-editing, wide-blocks
+*/
+
+/*
+ * Hinweis: Gestaltung gehört primär in theme.json (im Editor überschreibbar).
+ * Hier nur Details, die theme.json nicht abbildet. Keine externen Schriften
+ * oder CDNs (Datenschutz, DSGVO).
+ */
+
+.pawline-section {
+	padding-top: var(--wp--preset--spacing--60);
+	padding-bottom: var(--wp--preset--spacing--60);
+}
+
+.pawline-card {
+	background: var(--wp--preset--color--base);
+	border-radius: var(--wp--custom--radius--medium);
+	box-shadow: var(--wp--preset--shadow--soft);
+	padding: var(--wp--preset--spacing--40);
+	height: 100%;
+}
+
+.pawline-header {
+	border-bottom: 1px solid var(--wp--preset--color--stone);
+}
+
+.pawline-footer {
+	border-top: 1px solid var(--wp--preset--color--stone);
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.pawline-placeholder {
+	outline: 2px dashed var(--wp--preset--color--clay);
+	outline-offset: 4px;
+}
+
+/* Produktkacheln: große Bilder, ruhige Darstellung */
+.wc-block-product-template .wc-block-components-product-image img,
+.wp-block-woocommerce-product-image img {
+	border-radius: var(--wp--custom--radius--medium);
+	aspect-ratio: 1 / 1;
+	object-fit: cover;
+}
+
+.wc-block-product-template .wp-block-post-title {
+	font-family: var(--wp--preset--font-family--body);
+	font-size: var(--wp--preset--font-size--medium);
+	font-weight: 600;
+}
+
+/* Gut bedienbare Bedienelemente am Handy */
+@media (max-width: 600px) {
+	.wp-block-button__link,
+	.wc-block-components-button {
+		min-height: 48px;
+	}
+	.pawline-hide-mobile {
+		display: none !important;
+	}
+}
+
+:where(a, button, input, select, textarea):focus-visible {
+	outline: 2px solid var(--wp--preset--color--clay);
+	outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	* {
+		scroll-behavior: auto !important;
+		transition: none !important;
+		animation: none !important;
+	}
+}
+
+/* Kasse: Germanized-Kleinunternehmerhinweis unter der zugeklappten Bestellübersicht (nur schmale Ansicht,
+   breit steht er in der aufgeklappten Übersicht). Siehe pawline_checkout_mobile_small_business_notice(). */
+.pawline-checkout-tax-notice {
+	display: none;
+	font-size: var(--wp--preset--font-size--small, 0.875rem);
+	margin: 0.25rem 0 1rem;
+}
+.pawline-checkout-tax-notice .wc-gzd-additional-info {
+	margin: 0;
+}
+@media (max-width: 781px) {
+	.pawline-checkout-tax-notice {
+		display: block;
+	}
+}
+
+/* Kopfbereich auf dem Handy: eine Zeile – Titel | Menü (☰) | Konto | Warenkorb.
+   Tippflächen mindestens 44 × 44 px. Abstand zum Inhalt (Brotkrumen) ca. 20 px. */
+@media (max-width: 781px) {
+	.pawline-header > .wp-block-group.alignwide {
+		flex-wrap: nowrap;
+		gap: 0.25rem;
+		align-items: center;
+	}
+	.pawline-header > .wp-block-group.alignwide > .wp-block-group:first-child {
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+	.pawline-header .wp-block-site-title {
+		font-size: var(--wp--preset--font-size--medium, 1.125rem);
+		line-height: 1.2;
+		overflow-wrap: anywhere;
+	}
+	.pawline-header > .wp-block-group.alignwide > .wp-block-navigation {
+		flex: 0 0 auto;
+		order: 2;
+	}
+	.pawline-header > .wp-block-group.alignwide > .wp-block-group:last-child {
+		flex: 0 0 auto;
+		order: 3;
+		gap: 0;
+	}
+	.pawline-header .wp-block-navigation__responsive-container-open,
+	.pawline-header .wp-block-woocommerce-customer-account a,
+	.pawline-header .wc-block-mini-cart__button {
+		min-width: 44px;
+		min-height: 44px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0;
+	}
+	/* Auch wenn WooCommerce den Inhalt einrahmt (z. B. Produktseite: div.woocommerce.product > main). */
+	main.pawline-section {
+		padding-top: 1.25rem;
+	}
+	.wp-site-blocks > main.pawline-section,
+	.wp-site-blocks > :has(> main.pawline-section) {
+		margin-block-start: 0;
+	}
+	:has(> main.pawline-section) > main.pawline-section {
+		margin-block-start: 0;
+	}
+	main.pawline-section > .wp-block-woocommerce-breadcrumbs:first-child,
+	main.pawline-section > .woocommerce-breadcrumb:first-child {
+		margin-top: 0;
+	}
+}

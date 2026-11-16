@@ -1,0 +1,9 @@
+{
+  "name": "pawline-e2e",
+  "private": true,
+  "type": "module",
+  "description": "Browser-Test des Kaufablaufs (nur GitHub Actions / lokal gegen die Testumgebung)",
+  "dependencies": {
+    "playwright": "1.49.1"
+  }
+}
