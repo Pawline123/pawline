@@ -74,6 +74,10 @@ Das Plugin bestellt, bezahlt und benachrichtigt nichts automatisch und veränder
 - `tests/wp-smoke.php` – Prüfung in WordPress (Plugins, Einstellungen, Rechte, Templates, Blöcke, Download-Schutz).
 - `tests/check_blocks.py` – statische Prüfung des Block-Markups (wenn Python installiert ist).
 
+Automatisch in **GitHub Actions** (`.github/workflows/wordpress.yml`, bei jedem Pull Request mit Änderungen in `wordpress/`): Docker-Testumgebung, `setup-wp.sh`, Theme-/Plugin-Aktivierung, Demodaten, alle drei Prüfungen oben sowie ein Browser-Test des Kaufablaufs (`tests/e2e/checkout.mjs`: Demoprodukt → Warenkorb → Gastbestellung → Bestätigung und Bestell-E-Mail, jeweils mit Prüfung des § 19-Hinweises). Für diesen Test aktiviert `tests/ci/prepare-checkout.php` **nur in der CI** die Offline-Zahlart „Überweisung (nur CI-Test)“ und einen kostenlosen „Versand (nur CI-Test)“. Bericht: Job-Zusammenfassung und Artefakt `wordpress-testergebnisse` (mit Screenshots). Rechnungen, Stornos und Stripe-Zahlungen werden dort **nicht** geprüft.
+
+Lokal (nach `setup` und `demo`): `docker compose --profile tools run --rm wpcli wp eval-file /project/tests/ci/prepare-checkout.php`, dann `cd tests/e2e; npm install; npx playwright install chromium; cd ../..; node tests/e2e/checkout.mjs`.
+
 Die Abnahme mit echten Testbestellungen folgt [docs/TESTPLAN.md](docs/TESTPLAN.md).
 
 ## Sicherung und Wiederherstellung
@@ -97,7 +101,7 @@ Noch nichts ist gebucht oder umgestellt. Der bestehende Shopify-Shop und die Dom
    ```php
    define( 'PAWLINE_PRIVATE_DIR', '/absoluter/pfad/ausserhalb/htdocs/pawline-belege' );
    ```
-   Ohne diese Angabe liegen Belege unter `wp-content/uploads/pawline-private/` und sind nur per `.htaccess` gesperrt. Das wirkt nicht bei nginx-Servern.
+   **Ohne diese Angabe sind Beleguploads gesperrt.** Es gibt keinen Rückfall auf den Uploadordner, weil `.htaccess`-Sperren nicht bei jedem Server wirken (z. B. nginx). Auch ein Pfad innerhalb von WordPress, des Document-Root oder von `wp-content` (auch über Symlinks) wird abgewiesen.
 5. Testplan auf der Testadresse vollständig durchlaufen, dann Migration (Phase 3) und Domainumstellung planen.
 
 Zugangsdaten (Hosting, Stripe, Lizenzschlüssel) werden nur im jeweiligen Backend oder in der `wp-config.php` des Servers hinterlegt, nie im Projektordner.

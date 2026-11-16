@@ -143,6 +143,36 @@ check( 'Unbekannter Schlüssel', $store->path_for( '2026/' . str_repeat( 'b', 32
 file_put_contents( $tmp . '/private/' . $rec['key'], 'manipuliert' );
 check( 'Manipulation erkannt', $store->verify( $rec ), false );
 
+echo "\nAblageort (kein Rückfall auf öffentliche Ordner)\n";
+$web = $tmp . '/web';
+mkdir( $web . '/wp-content/uploads', 0777, true );
+$pdf = $tmp . '/rechnung.pdf';
+$none = new Private_Storage( '', array( $web ) );
+check( 'Nicht konfiguriert: als unsicher erkannt', $none->is_secure(), false );
+check( 'Nicht konfiguriert: Upload blockiert', $none->store( $pdf, 'r.pdf', false ) instanceof RuntimeException, true );
+check( 'Nicht konfiguriert: keine Sperrdateien angelegt', $none->ensure_protected(), false );
+check( 'Nicht konfiguriert: kein Download-Pfad', $none->path_for( '2026/' . str_repeat( 'a', 32 ) . '.pdf' ), null );
+$inside = new Private_Storage( $web . '/wp-content/uploads/pawline-private', array( $web, $web . '/wp-content/uploads' ) );
+$res = $inside->store( $pdf, 'r.pdf', false );
+check( 'Im Uploadordner: Upload blockiert', $res instanceof RuntimeException && str_contains( $res->getMessage(), 'öffentlich' ), true );
+check( 'Im Uploadordner: Ordner wird nicht angelegt', is_dir( $web . '/wp-content/uploads/pawline-private' ), false );
+check( 'Im Uploadordner: keine Datei gespeichert', glob( $web . '/wp-content/uploads/*' ), array() );
+$dots = new Private_Storage( $tmp . '/aussen/../web/belege', array( $web ) );
+check( 'Pfad mit ".." in den Webroot blockiert', $dots->is_secure(), false );
+check( 'Webroot selbst blockiert', ( new Private_Storage( $web, array( $web ) ) )->is_secure(), false );
+check( 'Relativer Pfad blockiert', ( new Private_Storage( 'belege', array( $web ) ) )->is_secure(), false );
+check( 'Windows-Pfad ohne Rücksicht auf Groß-/Kleinschreibung blockiert', ( new Private_Storage( 'C:\\InetPub\\wwwroot\\belege', array( 'c:/inetpub/WWWROOT' ) ) )->location_error() !== null, true );
+mkdir( $web . '/versteckt' );
+symlink( $web . '/versteckt', $tmp . '/link' );
+$sym = new Private_Storage( $tmp . '/link/belege', array( $web ) );
+check( 'Symlink in den Webroot blockiert', $sym->is_secure(), false );
+check( 'Symlink: Ordner im Webroot nicht angelegt', is_dir( $web . '/versteckt/belege' ), false );
+unlink( $tmp . '/link' );
+$outside = new Private_Storage( $tmp . '/aussen/belege', array( $web ) );
+check( 'Außerhalb des Webroots: sicher', $outside->is_secure(), true );
+check( 'Außerhalb des Webroots: Upload erlaubt', is_array( $outside->store( $pdf, 'r.pdf', false ) ), true );
+check( 'Webroot, der nur denselben Namensanfang hat, ist kein Treffer', ( new Private_Storage( $tmp . '/web-belege', array( $web ) ) )->is_secure(), true );
+
 echo "\nCSV-Export\n";
 $csv = Export::to_csv( array( array( 'Lieferant', 'Betrag' ), array( '=cmd', '12,50' ) ) );
 check( 'BOM vorhanden', substr( $csv, 0, 3 ), "\xEF\xBB\xBF" );

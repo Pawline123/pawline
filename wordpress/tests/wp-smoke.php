@@ -3,7 +3,7 @@
  * Integrationsprüfung INNERHALB von WordPress (wp eval-file).
  * Aufruf: .\scripts\pawline.ps1 test   (führt auch tests/run.php aus)
  *
- * Status: geschrieben, aber in der Erstellungsumgebung NICHT ausgeführt (kein WordPress verfügbar).
+ * Läuft automatisch in GitHub Actions (.github/workflows/wordpress.yml) und lokal über `pawline.ps1 test`.
  * Ergänzt die manuellen Prüfungen aus docs/TESTPLAN.md, ersetzt sie nicht.
  */
 
@@ -62,8 +62,32 @@ $t( 'Admin hat manage_pawline_documents', $admin && $admin->has_cap( 'manage_paw
 $customer = get_role( 'customer' );
 $t( 'Kunde hat KEIN Belegrecht', $customer && ! $customer->has_cap( 'manage_pawline_documents' ) && ! $customer->has_cap( 'edit_pawline_invoices' ) );
 $store = \Pawline\Dropship\Private_Storage::instance();
-$t( 'Belegablage beschreibbar', $store->ensure_protected() && is_writable( $store->base_dir() ) );
-$t( 'Belegablage außerhalb des Web-Verzeichnisses', 0 !== strpos( wp_normalize_path( $store->base_dir() ), wp_normalize_path( ABSPATH ) ) );
+$err   = $store->location_error();
+$t( 'Belegablage sicher konfiguriert' . ( $err ? " ({$err})" : ': ' . $store->base_dir() ), null === $err );
+$t( 'Belegablage außerhalb von ABSPATH', '' !== $store->base_dir() && 0 !== strpos( wp_normalize_path( $store->base_dir() ) . '/', trailingslashit( wp_normalize_path( ABSPATH ) ) ) );
+$uploads = wp_upload_dir( null, false );
+$t( 'Kein Belegordner im Uploadordner (kein Rückfall)', ! file_exists( $uploads['basedir'] . '/pawline-private' ) );
+// Simulierte Fehlkonfigurationen mit den echten öffentlichen Verzeichnissen dieser Installation.
+$roots = array( ABSPATH, WP_CONTENT_DIR, $uploads['basedir'] );
+$t( 'Ohne PAWLINE_PRIVATE_DIR: Upload gesperrt', ! ( new \Pawline\Dropship\Private_Storage( '', $roots ) )->is_secure() );
+$t( 'PAWLINE_PRIVATE_DIR im Uploadordner: Upload gesperrt', ! ( new \Pawline\Dropship\Private_Storage( $uploads['basedir'] . '/pawline-private', $roots ) )->is_secure() );
+$t( 'Uploadordner wurde dabei nicht angelegt', ! file_exists( $uploads['basedir'] . '/pawline-private' ) );
+// Echte Ablage einer Testdatei in der konfigurierten Ablage.
+if ( null === $err ) {
+	$tmp = wp_tempnam( 'pawline-smoke.pdf' );
+	file_put_contents( $tmp, "%PDF-1.4\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF\n" );
+	$rec = $store->store( $tmp, 'smoke-test.pdf', false );
+	$t( 'Testbeleg in sicherer Ablage gespeichert', is_array( $rec ) );
+	if ( is_array( $rec ) ) {
+		$path = $store->path_for( $rec['key'] );
+		$t( 'Testbeleg liegt außerhalb von ABSPATH', $path && 0 !== strpos( $path, wp_normalize_path( ABSPATH ) ) );
+		$t( 'Testbeleg Prüfsumme ok', $store->verify( $rec ) );
+		if ( $path ) {
+			unlink( $path );
+		}
+	}
+	@unlink( $tmp ); // phpcs:ignore
+}
 
 // Download ohne Anmeldung muss abgewiesen werden (Container-intern über den Dienstnamen).
 $resp = wp_remote_get( 'http://wordpress/wp-admin/admin-post.php?action=pawline_download&invoice=1&file=0', array( 'redirection' => 0, 'timeout' => 10 ) );

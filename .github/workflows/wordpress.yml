@@ -1,0 +1,151 @@
+# Automatische Prüfung des WordPress-Projekts in wordpress/.
+# Startet die Docker-Testumgebung, installiert WordPress mit WooCommerce, Germanized, ATUM und Stripe,
+# aktiviert Theme und Plugin, legt [DEMO]-Daten an und führt alle vorhandenen Prüfungen aus.
+# Es wird nichts veröffentlicht oder auf einen Server übertragen.
+name: WordPress-Prüfung
+
+on:
+  pull_request:
+    paths:
+      - 'wordpress/**'
+      - '.github/workflows/wordpress.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wordpress-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+    working-directory: wordpress
+
+env:
+  WP: docker compose --profile tools run --rm -T wpcli
+
+jobs:
+  wordpress:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Testumgebung vorbereiten (.env mit Zufallspasswörtern)
+        run: |
+          cp .env.example .env
+          sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=$(openssl rand -hex 16)/" .env
+          sed -i "s/^DB_ROOT_PASSWORD=.*/DB_ROOT_PASSWORD=$(openssl rand -hex 16)/" .env
+          sed -i "s/^WP_ADMIN_PASSWORD=.*/WP_ADMIN_PASSWORD=$(openssl rand -hex 16)/" .env
+          mkdir -p test-results && chmod 777 test-results docs && chmod 666 docs/VERSIONEN.md
+
+      - name: Container starten
+        id: up
+        run: |
+          docker compose up -d
+          for i in $(seq 1 60); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/ || true)
+            if [ "$code" = 200 ] || [ "$code" = 302 ]; then echo "WordPress antwortet (HTTP $code)"; exit 0; fi
+            sleep 3
+          done
+          docker compose logs; exit 1
+
+      - name: WordPress installieren (scripts/setup-wp.sh)
+        id: setup
+        run: |
+          docker compose --profile tools run --rm -T --user root wpcli sh -c 'mkdir -p /var/pawline-private && chown -R 33:33 /var/pawline-private && chmod 750 /var/pawline-private'
+          $WP sh /project/scripts/setup-wp.sh 2>&1 | tee test-results/setup.log
+          cp docs/VERSIONEN.md test-results/versionen.md || true
+
+      - name: Theme- und Plugin-Aktivierung prüfen
+        id: activation
+        run: |
+          $WP wp theme list --fields=name,status,version
+          $WP wp plugin list --fields=name,status,version
+          test "$($WP wp theme list --status=active --field=name)" = pawline
+          $WP wp plugin is-active pawline-dropship
+          $WP wp plugin is-active woocommerce
+          $WP wp plugin is-active woocommerce-germanized
+          echo "Germanized-Optionen zur Kleinunternehmerregelung:"
+          $WP wp option list --search='woocommerce_gzd_small*' --fields=option_name,option_value | tee test-results/germanized-optionen.txt
+
+      - name: Demodaten anlegen
+        id: demo
+        run: $WP sh /project/scripts/demo-data.sh
+
+      - name: Logiktests (tests/run.php)
+        id: unit
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: $WP php /project/tests/run.php 2>&1 | tee test-results/run.log
+
+      - name: Integrationsprüfung (tests/wp-smoke.php)
+        id: smoke
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: $WP wp eval-file /project/tests/wp-smoke.php 2>&1 | tee test-results/wp-smoke.log
+
+      - name: Statische Block-Prüfung (tests/check_blocks.py)
+        id: blocks
+        if: ${{ !cancelled() }}
+        run: python3 tests/check_blocks.py 2>&1 | tee test-results/check_blocks.log
+
+      - name: Kaufablauf vorbereiten (nur CI – Offline-Zahlart und Testversand)
+        id: prepare
+        if: ${{ !cancelled() && steps.demo.outcome == 'success' }}
+        run: $WP wp eval-file /project/tests/ci/prepare-checkout.php 2>&1 | tee test-results/prepare.log
+
+      - uses: actions/setup-node@v4
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' }}
+        with:
+          node-version: 22
+
+      - name: Kaufablauf im Browser (tests/e2e/checkout.mjs)
+        id: checkout
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' }}
+        run: |
+          (cd tests/e2e && npm install --no-audit --no-fund && npx playwright install --with-deps chromium)
+          node tests/e2e/checkout.mjs 2>&1 | tee test-results/checkout.log
+
+      - name: Bestellung in der Datenbank prüfen (tests/ci/verify-order.php)
+        id: order
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' }}
+        run: $WP wp eval-file /project/tests/ci/verify-order.php 2>&1 | tee test-results/order.log
+
+      - name: Bericht erstellen
+        if: ${{ !cancelled() }}
+        env:
+          STEP_OUTCOMES: >-
+            {"Container starten":"${{ steps.up.outcome }}",
+            "WordPress installieren":"${{ steps.setup.outcome }}",
+            "Theme-/Plugin-Aktivierung":"${{ steps.activation.outcome }}",
+            "Demodaten":"${{ steps.demo.outcome }}",
+            "Logiktests":"${{ steps.unit.outcome }}",
+            "wp-smoke.php":"${{ steps.smoke.outcome }}",
+            "Block-Prüfung":"${{ steps.blocks.outcome }}",
+            "Kaufablauf vorbereiten":"${{ steps.prepare.outcome }}",
+            "Kaufablauf im Browser":"${{ steps.checkout.outcome }}",
+            "Bestellung prüfen":"${{ steps.order.outcome }}"}
+        run: node tests/ci/report.mjs >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Protokolle sammeln
+        if: ${{ !cancelled() }}
+        run: |
+          docker compose logs --no-color > test-results/docker.log 2>&1 || true
+          $WP sh -c 'cat /var/www/html/wp-content/debug.log 2>/dev/null' > test-results/wp-debug.log || true
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: wordpress-testergebnisse
+          path: wordpress/test-results/
+          retention-days: 14
+
+      - name: Gesamtergebnis
+        if: ${{ !cancelled() }}
+        run: |
+          failed=0
+          for o in "${{ steps.up.outcome }}" "${{ steps.setup.outcome }}" "${{ steps.activation.outcome }}" "${{ steps.demo.outcome }}" "${{ steps.unit.outcome }}" "${{ steps.smoke.outcome }}" "${{ steps.blocks.outcome }}" "${{ steps.prepare.outcome }}" "${{ steps.checkout.outcome }}" "${{ steps.order.outcome }}"; do
+            [ "$o" = success ] || failed=1
+          done
+          exit $failed

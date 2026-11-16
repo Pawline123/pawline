@@ -126,8 +126,9 @@ final class Admin_Dashboard {
 				</ul>
 			<?php endif; ?>
 
-			<?php if ( ! Private_Storage::is_outside_webroot_configured() ) : ?>
-				<div class="notice notice-info inline"><p><strong>Belegablage:</strong> liegt derzeit unter <code><?php echo esc_html( Private_Storage::instance()->base_dir() ); ?></code> mit Zugriffssperre für Apache/IIS. Für den Live-Betrieb einen Ordner außerhalb des Web-Verzeichnisses über <code>PAWLINE_PRIVATE_DIR</code> in der wp-config.php festlegen. Bei nginx-Servern greift die .htaccess-Sperre nicht.</p></div>
+			<?php $storage_error = Private_Storage::instance()->location_error(); ?>
+			<?php if ( null !== $storage_error ) : ?>
+				<div class="notice notice-error inline"><p><strong>Belegablage gesperrt:</strong> <?php echo esc_html( $storage_error ); ?></p></div>
 			<?php endif; ?>
 		</div>
 		<?php

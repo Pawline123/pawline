@@ -87,7 +87,7 @@ Noch ist nichts gebucht oder umgestellt. Jeder Schritt, der Kosten verursacht od
    define( 'WP_ENVIRONMENT_TYPE', 'staging' );   // beim Livegang: 'production'
    define( 'PAWLINE_PRIVATE_DIR', '/absoluter/pfad/ausserhalb/des/webverzeichnisses/pawline-belege' );
    ```
-   Den Ordner für die Belege anlegen und für PHP beschreibbar machen. Ohne `PAWLINE_PRIVATE_DIR` liegen Belege unter `wp-content/uploads/pawline-private/` und sind nur per `.htaccess` geschützt – das wirkt nicht auf nginx-Servern.
+   Den Ordner für die Belege anlegen und für PHP beschreibbar machen. Ohne `PAWLINE_PRIVATE_DIR` – oder wenn der Pfad innerhalb eines öffentlich erreichbaren Verzeichnisses liegt – sind Beleguploads gesperrt; das Backend (Pawline › Überblick und Eingangsbeleg) zeigt dann den Grund an.
 
 ### B3. Theme und Plugin übertragen
 

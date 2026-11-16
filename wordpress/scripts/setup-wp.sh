@@ -80,7 +80,7 @@ for entry in "impressum|Impressum" "datenschutz|Datenschutzerklärung" "agb|AGB"
 done
 
 say "Belegablage"
-wp eval 'echo \Pawline\Dropship\Private_Storage::instance()->ensure_protected() ? "Belegablage bereit: " . \Pawline\Dropship\Private_Storage::instance()->base_dir() . "\n" : "FEHLER: Belegablage nicht beschreibbar\n";'
+wp eval '$s = \Pawline\Dropship\Private_Storage::instance(); $e = $s->location_error(); echo null === $e ? "Belegablage bereit: " . $s->base_dir() . "\n" : "WARNUNG: " . $e . "\n";'
 
 say "Versionen dokumentieren -> docs/VERSIONEN.md"
 {

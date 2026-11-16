@@ -191,13 +191,17 @@ final class Supplier_Invoices {
 			echo '<p>Noch keine Datei abgelegt.</p>';
 		}
 		?>
+		<?php
+		$storage_error = $storage->location_error();
+		if ( null !== $storage_error ) {
+			printf( '<div class="notice notice-error inline"><p><strong>Beleguploads gesperrt:</strong> %s</p></div>', esc_html( $storage_error ) );
+			return;
+		}
+		?>
 		<p><label for="pawline_files"><strong>Originalbeleg hinzufügen</strong> (PDF, XML der E-Rechnung, JPG, PNG; max. 20 MB je Datei)</label><br>
 		<input type="file" id="pawline_files" name="pawline_files[]" multiple accept=".pdf,.xml,.jpg,.jpeg,.png"></p>
-		<p class="description">Dateien werden außerhalb der Mediathek mit zufälligem Namen gespeichert und nur angemeldeten Berechtigten über eine geprüfte Download-Adresse ausgeliefert. Abgelegte Dateien können hier nicht gelöscht oder ersetzt werden.</p>
+		<p class="description">Dateien werden außerhalb des Web-Verzeichnisses und der Mediathek mit zufälligem Namen gespeichert und nur angemeldeten Berechtigten über eine geprüfte Download-Adresse ausgeliefert. Abgelegte Dateien können hier nicht gelöscht oder ersetzt werden.</p>
 		<?php
-		if ( ! Private_Storage::is_outside_webroot_configured() ) {
-			echo '<p class="description"><strong>Empfehlung für den Live-Betrieb:</strong> In der wp-config.php <code>PAWLINE_PRIVATE_DIR</code> auf einen Ordner außerhalb des Web-Verzeichnisses setzen (siehe README).</p>';
-		}
 	}
 
 	public static function render_log( \WP_Post $post ): void {
@@ -292,6 +296,11 @@ final class Supplier_Invoices {
 		}
 		$files   = $_FILES['pawline_files']; // phpcs:ignore WordPress.Security.NonceVerification,WordPress.Security.ValidatedSanitizedInput
 		$storage = Private_Storage::instance();
+		$blocked = $storage->location_error();
+		if ( null !== $blocked ) {
+			$errors[] = 'Beleg nicht gespeichert: ' . $blocked;
+			return array();
+		}
 		$records = self::get( $post_id )['files'];
 		$added   = array();
 		foreach ( $files['name'] as $i => $name ) {
