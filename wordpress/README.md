@@ -6,10 +6,11 @@ WordPress + WooCommerce mit eigenem Block-Theme und einem kleinen Plugin für ma
 
 ## Schnellstart (Windows)
 
-Ausführlich mit Installation von Docker Desktop und Claude Code: [docs/EINRICHTUNG-WINDOWS.md](docs/EINRICHTUNG-WINDOWS.md).
+Ausführlich: [docs/START-UND-VEROEFFENTLICHUNG.md](docs/START-UND-VEROEFFENTLICHUNG.md) (Start und Veröffentlichung) und [docs/EINRICHTUNG-WINDOWS.md](docs/EINRICHTUNG-WINDOWS.md) (Installation von Docker Desktop und Claude Code).
 
 ```powershell
-cd $env:USERPROFILE\Documents\Pawline
+git clone https://github.com/Pawline123/pawline.git $env:USERPROFILE\Documents\pawline   # einmalig
+cd $env:USERPROFILE\Documents\pawline\wordpress
 powershell -ExecutionPolicy Bypass -File .\scripts\pawline.ps1 start
 powershell -ExecutionPolicy Bypass -File .\scripts\pawline.ps1 setup
 powershell -ExecutionPolicy Bypass -File .\scripts\pawline.ps1 demo     # optional: [DEMO]-Produkte
@@ -84,6 +85,8 @@ Die Abnahme mit echten Testbestellungen folgt [docs/TESTPLAN.md](docs/TESTPLAN.m
 Uploads/Belege zurückspielen: `docker compose --profile tools run --rm wpcli tar -xzf /project/backups/uploads-<zeit>.tar.gz -C /var/www/html/wp-content` (für Belege `-C /var`). Die Wiederherstellung einmal vor dem Live-Gang erproben.
 
 ## Veröffentlichung (später, nicht Teil dieses Schritts)
+
+Schritt für Schritt mit Domainumstellung und Rückfallebene: [docs/START-UND-VEROEFFENTLICHUNG.md](docs/START-UND-VEROEFFENTLICHUNG.md#teil-b--veröffentlichung-später).
 
 Noch nichts ist gebucht oder umgestellt. Der bestehende Shopify-Shop und die Domain bleiben unverändert.
 

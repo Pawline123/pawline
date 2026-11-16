@@ -15,9 +15,15 @@ Prüfen, ob die Virtualisierung aktiv ist: Docker Desktop startet ohne Fehlermel
 
 ## 2. Projekt ablegen
 
-1. ZIP in `C:\Users\<du>\Documents` entpacken (Rechtsklick › Alle extrahieren › als Ziel nur `C:\Users\<du>\Documents` eintragen, den vorgeschlagenen Zusatz „\Pawline-Projekt“ entfernen). Es entsteht der Ordner `Documents\Pawline`, der direkt `docker-compose.yml`, `scripts`, `wp-content` … enthält.
-2. Die Spezifikation `Pawline_Claude_Code_Startauftrag.txt` in denselben Ordner legen (liegt im ZIP bereits bei).
-3. Optional, falls die Lizenz gekauft ist: Germanized-Pro-ZIP nach `private-plugins\` kopieren.
+Das Projekt liegt im GitHub-Repository `Pawline123/pawline` im Ordner `wordpress/` (der Next.js-Shop in der Wurzel bleibt unberührt):
+
+```powershell
+cd $env:USERPROFILE\Documents
+git clone https://github.com/Pawline123/pawline.git
+cd pawline\wordpress
+```
+
+Alle folgenden Befehle laufen im Ordner `Documents\pawline\wordpress`. Optional, falls die Lizenz gekauft ist: Germanized-Pro-ZIP nach `private-plugins\` kopieren.
 
 ## 3. Testumgebung starten
 
@@ -42,7 +48,7 @@ Der erste Start lädt mehrere hundert MB (Container-Images, WordPress, Plugins) 
 ## 4. Mit Claude Code weiterarbeiten
 
 ```powershell
-cd $env:USERPROFILE\Documents\Pawline
+cd $env:USERPROFILE\Documents\pawline\wordpress
 claude
 ```
 Vorschlag für den ersten Auftrag:
