@@ -98,6 +98,16 @@ try {
   await page.waitForSelector('.wc-block-cart-items__row, .woocommerce-cart-form .cart_item', { state: 'visible', timeout: 30000 }).catch(() => {});
   await page.waitForTimeout(500);
   const cText = await page.innerText('body');
+  const cartOk = cText.includes('[DEMO] Einfaches Produkt') && /19,90\s*€/.test(cText);
+  if (!cartOk) {
+    const diag = await page.evaluate(() => ({
+      rows: document.querySelectorAll('.wc-block-cart-items__row, .cart_item').length,
+      names: [...document.querySelectorAll('.wc-block-components-product-name, .product-name')].map((e) => e.textContent.trim()),
+      html: (document.querySelector('.wp-block-woocommerce-cart, .woocommerce-cart-form, main')?.outerHTML || '').replace(/\s+/g, ' ').slice(0, 1500),
+    }));
+    console.log('Diagnose Warenkorb:', JSON.stringify(diag, null, 1));
+    console.log('Seitentext Warenkorb:', cText.replace(/\s+/g, ' ').slice(0, 1200));
+  }
   record('Warenkorb', 'Demoprodukt im Warenkorb', cText.includes('[DEMO] Einfaches Produkt'));
   record('Warenkorb', 'Summe 19,90 €', /19,90\s*€/.test(cText));
   await checkTaxTexts('Warenkorb', page);
