@@ -24,6 +24,8 @@
 
 <!-- wp:woocommerce-germanized/product-tax-info {"fontSize":"small"} /-->
 
+<!-- wp:woocommerce-germanized/product-shipping-costs-info {"fontSize":"small"} /-->
+
 <!-- wp:woocommerce/product-button {"isDescendentOfQueryLoop":true} /-->
 <!-- /wp:woocommerce/product-template --></div>
 <!-- /wp:woocommerce/product-collection -->

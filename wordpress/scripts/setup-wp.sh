@@ -58,11 +58,36 @@ wp option update woocommerce_enable_checkout_login_reminder "yes"
 wp option update woocommerce_coming_soon "no" || true
 wp wc tool run install_pages --user="$WP_ADMIN_USER" >/dev/null || echo "WARNUNG: Shopseiten konnten nicht angelegt werden."
 
+say "Deutsche Titel und Adressen der Shopseiten, Beispielseite entfernen"
+wp eval '
+foreach ( array( "cart" => array( "Warenkorb", "warenkorb" ), "checkout" => array( "Kasse", "kasse" ), "myaccount" => array( "Mein Konto", "mein-konto" ), "shop" => array( "Shop", "shop" ) ) as $key => $t ) {
+	$id = wc_get_page_id( $key );
+	if ( $id > 0 ) {
+		wp_update_post( array( "ID" => $id, "post_title" => $t[0], "post_name" => $t[1] ) );
+		echo "Seite {$key}: {$t[0]} (/{$t[1]}/)\n";
+	}
+}
+foreach ( array( "sample-page", "beispiel-seite" ) as $slug ) {
+	$p = get_page_by_path( $slug );
+	if ( $p ) {
+		wp_delete_post( $p->ID, true );
+		echo "Beispielseite gelöscht: {$slug}\n";
+	}
+}
+'
+wp rewrite flush --hard
+
 say "Germanized: Kleinunternehmerregelung"
 # ACHTUNG: Optionsname aus der Germanized-Codebasis übernommen, in dieser Umgebung NICHT
 # gegen die installierte Version geprüft. Nach dem Setup im Backend kontrollieren:
 # WooCommerce > Einstellungen > Germanized > Allgemein > Kleinunternehmerregelung.
 wp option update woocommerce_gzd_small_enterprise "yes"
+# Preisauszeichnung in Produktlisten: Das Theme setzt die Germanized-Blöcke „Steuerhinweis“ und
+# „Versandkostenhinweis“ direkt unter den Preis. Germanizeds automatische Ausgabe unter der
+# Warenkorb-Schaltfläche wird abgeschaltet, sonst erscheinen beide Hinweise doppelt.
+# (Backend: WooCommerce › Einstellungen › Germanized › Preisauszeichnung › Produktliste)
+wp option update woocommerce_gzd_display_product_loop_tax "no"
+wp option update woocommerce_gzd_display_product_loop_shipping_costs "no"
 
 say "Seiten (Kontakt, Rechtstext-Entwürfe)"
 create_page() { # slug, titel, status, inhalt

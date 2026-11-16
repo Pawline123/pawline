@@ -29,7 +29,7 @@ const TAX_SHOWN = /(inkl\.|inklusive|zzgl\.|zuzüglich)\s*(\d+([,.]\d+)?\s*%\s*)
 // Treffer im Kopf- oder Fußbereich der Seite zählen nie.
 // anchor: CSS-Selektor des Preises/Summenelements; rowText: optional Regex-Quelle für die Summenzeile;
 // scope: optional Element-Selektor/Text, auf den Anker und Hinweis beschränkt werden.
-async function checkNoticeAtPrice(area, page, { anchor, label, maxGap = 48, rowText = null, scopeText = null }) {
+async function checkNoticeAtPrice(area, page, { anchor, label, maxGap = 48, rowText = null, scopeText = null, pattern = NOTICE, title = '§ 19-Hinweis' }) {
   const r = await page.evaluate(({ anchor, maxGap, rowText, scopeText, noticeSrc }) => {
     const NOTICE = new RegExp(noticeSrc, 'i');
     const inChrome = (el) => !!el.closest('header, footer, .wp-block-template-part');
@@ -59,12 +59,12 @@ async function checkNoticeAtPrice(area, page, { anchor, label, maxGap = 48, rowT
     });
     const near = all.filter((n) => !n.chrome && n.overlapX && (n.sameRow || (n.gap >= -4 && n.gap <= maxGap)));
     return { anchorText: a.textContent.replace(/\s+/g, ' ').trim().slice(0, 60), near: near[0] || null, others: all.slice(0, 4) };
-  }, { anchor, maxGap, rowText, scopeText, noticeSrc: NOTICE.source });
+  }, { anchor, maxGap, rowText, scopeText, noticeSrc: pattern.source });
 
-  if (r.error) return record(area, `§ 19-Hinweis ${label}`, false, r.error);
-  if (r.near) return record(area, `§ 19-Hinweis ${label}`, true, `„${r.near.text}“ (${r.near.sameRow ? 'gleiche Zeile' : r.near.gap + ' px darunter'}; Bezug: „${r.anchorText}“)`);
+  if (r.error) return record(area, `${title} ${label}`, false, r.error);
+  if (r.near) return record(area, `${title} ${label}`, true, `„${r.near.text}“ (${r.near.sameRow ? 'gleiche Zeile' : r.near.gap + ' px darunter'}; Bezug: „${r.anchorText}“)`);
   const where = r.others.length ? r.others.map((o) => `${o.chrome ? 'Kopf-/Fußbereich' : (o.overlapX ? o.gap + ' px Abstand' : 'andere Spalte')}: „${o.text.slice(0, 50)}“`).join(' | ') : 'kein Hinweis auf der Seite';
-  record(area, `§ 19-Hinweis ${label}`, false, `nicht beim Preis (max. ${maxGap} px). Gefunden: ${where}`);
+  record(area, `${title} ${label}`, false, `nicht beim Preis (max. ${maxGap} px). Gefunden: ${where}`);
 }
 async function checkNoTaxShown(area, page) {
   const all = await page.innerText('body');
@@ -117,6 +117,15 @@ try {
   });
   record('Produktübersicht', 'Warenkorb-Schaltfläche direkt in der Übersicht', !!listButton, listButton ? `„${listButton}“` : 'keine', true);
   await checkNoticeAtPrice('Produktübersicht', page, { anchor: '.wc-block-components-product-price, .wp-block-woocommerce-product-price, .price', label: 'direkt unter dem Preis der Produktkarte', scopeText: '[DEMO] Einfaches Produkt' });
+  await checkNoticeAtPrice('Produktübersicht', page, { anchor: '.wc-block-components-product-price, .wp-block-woocommerce-product-price, .price', label: 'beim Preis der Produktkarte', scopeText: '[DEMO] Einfaches Produkt', maxGap: 90, pattern: /Versandkosten/i, title: '„zzgl. Versandkosten“' });
+  const dup = await page.evaluate((src) => {
+    const re = new RegExp(src, 'i');
+    const card = [...document.querySelectorAll('li, .wc-block-product, .wp-block-post')]
+      .filter((e) => e.textContent.includes('[DEMO] Einfaches Produkt')).sort((a, b) => a.textContent.length - b.textContent.length)[0];
+    if (!card) return -1;
+    return [...card.querySelectorAll('*')].filter((e) => re.test(e.textContent) && ![...e.children].some((c) => re.test(c.textContent)) && e.getBoundingClientRect().height > 0).length;
+  }, NOTICE.source);
+  record('Produktübersicht', '§ 19-Hinweis genau einmal je Produktkarte', dup === 1, `${dup}× gefunden`);
   await checkNoTaxShown('Produktübersicht', page);
   await shot('0-uebersicht');
 
@@ -127,6 +136,7 @@ try {
   record('Produktseite', 'Titel „[DEMO] Einfaches Produkt“', pText.includes('[DEMO] Einfaches Produkt'));
   record('Produktseite', 'Preis 19,90 €', /19,90\s*€/.test(pText));
   await checkNoticeAtPrice('Produktseite', page, { anchor: 'main .wp-block-woocommerce-product-price', label: 'direkt unter dem Preis' });
+  await checkNoticeAtPrice('Produktseite', page, { anchor: 'main .wp-block-woocommerce-product-price', label: 'beim Preis', maxGap: 90, pattern: /zzgl\.?\s*Versandkosten|Versandkosten/i, title: '„zzgl. Versandkosten“' });
   await checkNoTaxShown('Produktseite', page);
   await shot('1-produkt');
 

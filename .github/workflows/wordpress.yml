@@ -29,7 +29,9 @@ env:
 jobs:
   wordpress:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 40
+    permissions:
+      contents: write   # nur für den Branch ci-screenshots (Screenshots zur Ansicht); main und PR-Branch bleiben unberührt
     steps:
       - uses: actions/checkout@v4
 
@@ -112,6 +114,35 @@ jobs:
         if: ${{ !cancelled() && steps.prepare.outcome == 'success' }}
         run: $WP wp eval-file /project/tests/ci/verify-order.php 2>&1 | tee test-results/order.log
 
+      - name: Handy-Ansicht (tests/e2e/mobile.mjs)
+        id: mobile
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' }}
+        run: node tests/e2e/mobile.mjs 2>&1 | tee test-results/mobile.log
+
+      - name: Verwaltung vorbereiten (Testbestellung auf „In Bearbeitung“)
+        id: prepadmin
+        if: ${{ !cancelled() && steps.order.outcome == 'success' }}
+        run: $WP wp eval-file /project/tests/ci/prepare-admin.php 2>&1 | tee test-results/prepare-admin.log
+
+      - name: Verwaltung im Browser (tests/e2e/admin.mjs)
+        id: admin
+        if: ${{ !cancelled() && steps.prepadmin.outcome == 'success' }}
+        run: |
+          set -a; . ./.env; set +a
+          node tests/e2e/admin.mjs 2>&1 | tee test-results/admin.log
+
+      - name: Verwaltung in der Datenbank prüfen (tests/ci/verify-admin.php)
+        id: verifyadmin
+        if: ${{ !cancelled() && steps.prepadmin.outcome == 'success' }}
+        run: $WP wp eval-file /project/tests/ci/verify-admin.php 2>&1 | tee test-results/verify-admin.log
+
+      - name: WordPress-Editor (tests/e2e/editor.mjs)
+        id: editor
+        if: ${{ !cancelled() && steps.prepadmin.outcome == 'success' }}
+        run: |
+          set -a; . ./.env; set +a
+          node tests/e2e/editor.mjs 2>&1 | tee test-results/editor.log
+
       - name: Demodaten entfernen (T-27)
         id: demoremove
         if: ${{ !cancelled() && steps.demo.outcome == 'success' }}
@@ -136,6 +167,10 @@ jobs:
             "Kaufablauf vorbereiten":"${{ steps.prepare.outcome }}",
             "Kaufablauf im Browser":"${{ steps.checkout.outcome }}",
             "Bestellung prüfen":"${{ steps.order.outcome }}",
+            "Handy-Ansicht":"${{ steps.mobile.outcome }}",
+            "Verwaltung im Browser":"${{ steps.admin.outcome }}",
+            "Verwaltung in der Datenbank":"${{ steps.verifyadmin.outcome }}",
+            "WordPress-Editor":"${{ steps.editor.outcome }}",
             "Demodaten entfernen (T-27)":"${{ steps.demoremove.outcome }}"}
         run: node tests/ci/report.mjs >> "$GITHUB_STEP_SUMMARY"
 
@@ -144,6 +179,23 @@ jobs:
         run: |
           docker compose logs --no-color > test-results/docker.log 2>&1 || true
           $WP sh -c 'cat /var/www/html/wp-content/debug.log 2>/dev/null' > test-results/wp-debug.log || true
+
+      - name: Screenshots auf Branch ci-screenshots ablegen
+        if: ${{ !cancelled() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
+        env:
+          TOKEN: ${{ github.token }}
+        run: |
+          dir=$(mktemp -d)
+          mkdir -p "$dir/screenshots"
+          cp -r test-results/screenshots/. "$dir/screenshots/" 2>/dev/null || true
+          cp test-results/bericht.md test-results/*.json "$dir/" 2>/dev/null || true
+          printf 'Lauf %s, Commit %s, %s\n' "$GITHUB_RUN_NUMBER" "$GITHUB_SHA" "$(date -u +%FT%TZ)" > "$dir/LAUF.txt"
+          cd "$dir"
+          git init -q -b ci-screenshots
+          git add -A
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -qm "Screenshots Lauf $GITHUB_RUN_NUMBER ($GITHUB_SHA)"
+          git push -q -f "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" ci-screenshots
+          echo "Screenshots: https://github.com/${GITHUB_REPOSITORY}/tree/ci-screenshots"
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
@@ -156,7 +208,7 @@ jobs:
         if: ${{ !cancelled() }}
         run: |
           failed=0
-          for o in "${{ steps.up.outcome }}" "${{ steps.setup.outcome }}" "${{ steps.activation.outcome }}" "${{ steps.demo.outcome }}" "${{ steps.unit.outcome }}" "${{ steps.smoke.outcome }}" "${{ steps.blocks.outcome }}" "${{ steps.prepare.outcome }}" "${{ steps.checkout.outcome }}" "${{ steps.order.outcome }}" "${{ steps.demoremove.outcome }}"; do
+          for o in "${{ steps.up.outcome }}" "${{ steps.setup.outcome }}" "${{ steps.activation.outcome }}" "${{ steps.demo.outcome }}" "${{ steps.unit.outcome }}" "${{ steps.smoke.outcome }}" "${{ steps.blocks.outcome }}" "${{ steps.prepare.outcome }}" "${{ steps.checkout.outcome }}" "${{ steps.order.outcome }}" "${{ steps.demoremove.outcome }}" "${{ steps.mobile.outcome }}" "${{ steps.admin.outcome }}" "${{ steps.verifyadmin.outcome }}" "${{ steps.editor.outcome }}"; do
             [ "$o" = success ] || failed=1
           done
           exit $failed

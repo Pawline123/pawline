@@ -51,6 +51,10 @@ $t( 'Germanized Kleinunternehmer-Option gesetzt (Optionsname im Backend prüfen!
 foreach ( array( 'cart', 'checkout', 'myaccount', 'shop' ) as $page ) {
 	$t( "Shopseite vorhanden: {$page}", wc_get_page_id( $page ) > 0 );
 }
+foreach ( array( 'cart' => 'Warenkorb', 'checkout' => 'Kasse', 'myaccount' => 'Mein Konto', 'shop' => 'Shop' ) as $page => $title ) {
+	$t( "Seitentitel deutsch: {$title}", get_the_title( wc_get_page_id( $page ) ) === $title, false );
+}
+$t( 'Beispielseite entfernt', ! get_page_by_path( 'sample-page' ) && ! get_page_by_path( 'beispiel-seite' ) );
 
 echo "\nPawline-Plugin\n";
 $t( 'Post-Typ Lieferantenauftrag', post_type_exists( 'pawline_po' ) );
@@ -107,7 +111,7 @@ foreach ( array( 'front-page', 'single-product', 'archive-product', 'page-cart',
 	}
 }
 $registry = WP_Block_Type_Registry::get_instance();
-foreach ( array( 'woocommerce/product-collection', 'woocommerce/product-template', 'woocommerce/product-image-gallery', 'woocommerce/add-to-cart-form', 'woocommerce/product-categories', 'woocommerce/mini-cart', 'woocommerce/breadcrumbs', 'woocommerce/catalog-sorting', 'woocommerce/product-results-count', 'woocommerce/product-sku', 'woocommerce/product-details', 'woocommerce-germanized/product-tax-info', 'woocommerce/order-confirmation-totals' ) as $block ) {
+foreach ( array( 'woocommerce/product-collection', 'woocommerce/product-template', 'woocommerce/product-image-gallery', 'woocommerce/add-to-cart-form', 'woocommerce/product-categories', 'woocommerce/mini-cart', 'woocommerce/breadcrumbs', 'woocommerce/catalog-sorting', 'woocommerce/product-results-count', 'woocommerce/product-sku', 'woocommerce/product-details', 'woocommerce-germanized/product-tax-info', 'woocommerce-germanized/product-shipping-costs-info', 'woocommerce/order-confirmation-totals' ) as $block ) {
 	$t( "Block registriert: {$block}", $registry->is_registered( $block ) );
 }
 $t( 'Theme hängt Germanized-Hinweis an die Bestellsummen (Filter registriert)', false !== has_filter( 'render_block_woocommerce/order-confirmation-totals', 'pawline_order_confirmation_small_business_notice' ) );

@@ -30,7 +30,7 @@ if (smoke) {
   lines.push('', sum ? `**${sum[0]}** (nur Warnungen und Fehler aufgelistet)` : '**Keine Ergebniszeile – Prüfung abgebrochen, siehe Protokoll.**', '');
 }
 
-for (const [file, title] of [['checkout.json', 'Kaufablauf im Browser (`tests/e2e/checkout.mjs`)'], ['order.json', 'Bestellung in der Datenbank (`tests/ci/verify-order.php`)']]) {
+for (const [file, title] of [['checkout.json', 'Kaufablauf im Browser (`tests/e2e/checkout.mjs`)'], ['order.json', 'Bestellung in der Datenbank (`tests/ci/verify-order.php`)'], ['mobile.json', 'Handy-Ansicht (`tests/e2e/mobile.mjs`)'], ['admin.json', 'Verwaltung im Browser (`tests/e2e/admin.mjs`)'], ['admin-db.json', 'Verwaltung in der Datenbank (`tests/ci/verify-admin.php`)'], ['editor.json', 'WordPress-Editor (`tests/e2e/editor.mjs`)']]) {
   const raw = read(file);
   lines.push(`## ${title}`, '');
   if (!raw) { lines.push('_Nicht gelaufen._', ''); continue; }
@@ -47,7 +47,7 @@ lines.push('## ⏸️ Ausdrücklich NICHT geprüft', '',
   '| Zahlung mit Stripe (Testkarte erfolgreich/abgelehnt) | Keine Stripe-Testschlüssel; im Kaufablauf wurde nur die Offline-Zahlart „Überweisung (nur CI-Test)“ verwendet |',
   '| Stripe-Webhooks, doppelte Zahlungsbenachrichtigung | Keine Stripe-Testschlüssel |',
   '| Versandkosten | Noch keine echten Versandregeln; im Test nur „Versand (nur CI-Test)“ ohne Kosten |',
-  '| Darstellung im Website-Editor (ungültige Blöcke), Handy-Ansicht | Manuelle Prüfung T-01 bis T-03 |',
+  '| Gestalterische Beurteilung (Farben, Abstände) | Nur Screenshots; Beurteilung durch Menschen |',
   '| Hosting-Server (nginx/Apache, wp-config.php) | Nur Docker-Testumgebung (Apache) |', '');
 
 writeFileSync(`${OUT}/bericht.md`, lines.join('\n'));
