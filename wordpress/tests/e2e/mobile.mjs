@@ -19,7 +19,9 @@ const record = (area, name, ok, detail = '', warnOnly = false) => {
   results.push({ area, name, status, detail });
   console.log(`  ${status.padEnd(5)} [${area}] ${name}${detail ? ' – ' + detail : ''}`);
 };
-const NOTICE = /§\s*19\s*UStG|Kleinunternehmer/i;
+// Einheitlicher Wortlaut aus den Germanized-Einstellungen (setup-wp.sh). Der alte Germanized-Standardtext zählt nicht.
+const NOTICE = /Umsatzsteuerbefreit\s+gemäß\s+§\s*19\s+UStG\./i;
+const OLD_NOTICE = /Kein Mehrwertsteuerausweis|keine Umsatzsteuer berechnet/i;
 
 const browser = await chromium.launch();
 const context = await browser.newContext({ ...devices['iPhone 13'], locale: 'de-DE' });
@@ -56,6 +58,31 @@ async function checkPage(area, { notice = true, buttons = [] } = {}) {
     else record(area, `Schaltfläche „${b.text}“ gut antippbar (≥ 44 px)`, b.h >= 44, `${b.w} × ${b.h} px`, b.h >= 36);
   }
 }
+// Kopfbereich: eine Zeile, Reihenfolge Menü → Konto → Warenkorb, Tippflächen ≥ 44 px, Abstand zum Inhalt 12–28 px.
+async function checkHeader(area, { cart = true } = {}) {
+  const h = await page.evaluate(() => {
+    const box = (sel) => { const e = [...document.querySelectorAll(sel)].find((x) => x.getBoundingClientRect().width > 0); if (!e) return null; const b = e.getBoundingClientRect(); return { x: Math.round(b.left), y: Math.round(b.top + b.height / 2), w: Math.round(b.width), h: Math.round(b.height) }; };
+    const header = document.querySelector('.pawline-header')?.getBoundingClientRect();
+    const first = document.querySelector('main .wp-block-woocommerce-breadcrumbs, main .woocommerce-breadcrumb, main h1');
+    return {
+      menu: box('.pawline-header .wp-block-navigation__responsive-container-open'),
+      account: box('.pawline-header .wc-block-customer-account a'),
+      cart: box('.pawline-header .wc-block-mini-cart__button'),
+      headerH: header ? Math.round(header.height) : null,
+      gap: header && first ? Math.round(first.getBoundingClientRect().top - header.bottom) : null,
+      firstEl: first ? (first.matches('h1') ? 'Seitentitel' : 'Brotkrumen') : '–',
+    };
+  });
+  const items = [['Menü', h.menu], ['Konto', h.account]].concat(cart ? [['Warenkorb', h.cart]] : []);
+  const missing = items.filter(([, b]) => !b).map(([n]) => n);
+  if (missing.length) { record(area, 'Kopfbereich: Symbole vorhanden', false, `fehlt: ${missing.join(', ')}`); return; }
+  const oneRow = items.every(([, b]) => Math.abs(b.y - items[0][1].y) <= 8);
+  const order = items.every(([, b], i) => i === 0 || b.x > items[i - 1][1].x);
+  record(area, `Kopfbereich: ${items.map(([n]) => n).join(' → ')} in einer Zeile`, oneRow && order, items.map(([n, b]) => `${n} x=${b.x} y=${b.y}`).join(', ') + `; Kopfhöhe ${h.headerH} px`);
+  const small = items.filter(([, b]) => b.w < 44 || b.h < 44);
+  record(area, 'Kopfbereich: Tippflächen ≥ 44 × 44 px', small.length === 0, items.map(([n, b]) => `${n} ${b.w}×${b.h}`).join(', '));
+  record(area, `Abstand Kopfbereich → ${h.firstEl} 12–28 px`, h.gap !== null && h.gap >= 12 && h.gap <= 28, h.gap === null ? 'nicht messbar' : `${h.gap} px`);
+}
 const shot = (name) => page.screenshot({ path: `${OUT}/screenshots/mobil-${name}.png`, fullPage: true }).catch(() => {});
 
 try {
@@ -80,12 +107,14 @@ try {
   resp = await page.goto(urls.shop, { waitUntil: 'networkidle' });
   record('Produktübersicht', 'lädt', resp?.ok() ?? false, `HTTP ${resp?.status()}`);
   await checkPage('Produktübersicht', { buttons: ['.wc-block-components-product-button__button, .add_to_cart_button, .wp-block-button__link'] });
+  await checkHeader('Produktübersicht', {});
   await shot('2-uebersicht');
 
   // Produktseite
   resp = await page.goto(urls.product, { waitUntil: 'networkidle' });
   record('Produktseite', 'lädt', resp?.ok() ?? false, `HTTP ${resp?.status()}`);
   await checkPage('Produktseite', { buttons: ['button.single_add_to_cart_button'] });
+  await checkHeader('Produktseite', {});
   await shot('3-produkt');
   await page.locator('button.single_add_to_cart_button').first().click();
   await page.waitForLoadState('networkidle');
@@ -96,6 +125,7 @@ try {
   await page.waitForTimeout(800);
   record('Warenkorb', 'Produkt im Warenkorb', (await page.innerText('body')).includes('[DEMO] Einfaches Produkt'));
   await checkPage('Warenkorb', { buttons: ['.wc-block-cart__submit-button, .checkout-button'] });
+  await checkHeader('Warenkorb', { cart: false });
   await shot('4-warenkorb');
 
   // Kasse
@@ -119,6 +149,7 @@ try {
     return { ok: false, anchors: anchors.map((a) => a.textContent.replace(/\s+/g, ' ').trim().slice(0, 40)), notices: notices.length };
   }, NOTICE.source);
   record('Kasse', '§ 19-Hinweis direkt beim Gesamtbetrag (≤ 80 px)', near.ok, near.ok ? `${near.gap} px unter „${near.anchor}“` : `Gesamtbetrag: ${near.anchors.join(' | ') || 'nicht gefunden'}; Hinweise im Inhalt: ${near.notices}`);
+  await checkHeader('Kasse', { cart: false });
   await shot('5-kasse');
 } catch (e) {
   record('Ablauf', 'Unerwarteter Fehler', false, e.message.split('\n')[0]);

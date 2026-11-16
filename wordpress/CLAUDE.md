@@ -6,7 +6,7 @@ Teststatus: `docs/TESTSTATUS.md` – **nach jeder Prüfung aktualisieren** (was 
 ## Festgelegte Entscheidungen
 
 - WordPress + WooCommerce, selbst gehostet; eigenes **Block-Theme** `pawline`, Bearbeitung über den Website-Editor.
-- **Kleinunternehmer nach § 19 UStG**: WooCommerce-Steuerberechnung aus (`woocommerce_calc_taxes = no`), Germanized-Kleinunternehmer-Kennzeichnung an. Keine „inkl. MwSt.“-Angaben, kein 0-%-Steuersatz als Ersatz. Rechnungshinweis: „Für diesen Umsatz gilt die Steuerbefreiung für Kleinunternehmer gemäß § 19 UStG.“
+- **Kleinunternehmer nach § 19 UStG**: WooCommerce-Steuerberechnung aus (`woocommerce_calc_taxes = no`), Germanized-Kleinunternehmer-Kennzeichnung an. Keine „inkl. MwSt.“-Angaben, kein 0-%-Steuersatz als Ersatz. Rechnungshinweis: „Für diesen Umsatz gilt die Steuerbefreiung für Kleinunternehmer gemäß § 19 UStG.“ Hinweis im Shop (Preise, Summen, E-Mails, Fußbereich) einheitlich: „Umsatzsteuerbefreit gemäß § 19 UStG.“ – zentral als Germanized-Option `woocommerce_gzd_small_enterprise_text` (`setup-wp.sh`), nicht im Theme hart codieren.
 - Rechnungen/Stornos/Lieferscheine: **Germanized Pro** (keine eigene Rechnungsnummernlogik bauen).
 - Warenwirtschaft: **ATUM Free** (Lieferanten, Einkaufspreise, Lieferanten-SKU). ATUM-Einkaufsbestellungen **nicht** für Dropshipping verwenden bzw. nie als „erhalten“ buchen (würde Lagerzugang erzeugen).
 - Eigenes Plugin `pawline-dropship`: nur die Lücken – Lieferantenauftrag ↔ Kundenbestellung, geschützte Eingangsbelege, manuelle Versandinfos, Überblick, Auswertung, CSV-Export.

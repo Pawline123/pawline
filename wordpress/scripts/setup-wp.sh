@@ -82,6 +82,9 @@ say "Germanized: Kleinunternehmerregelung"
 # gegen die installierte Version geprüft. Nach dem Setup im Backend kontrollieren:
 # WooCommerce > Einstellungen > Germanized > Allgemein > Kleinunternehmerregelung.
 wp option update woocommerce_gzd_small_enterprise "yes"
+# Einheitlicher Wortlaut des Kleinunternehmerhinweises (Germanized nutzt ihn auf Produktseiten, in Listen,
+# Warenkorb, Kasse, Bestellbestätigung und E-Mails). Backend: Germanized › Allgemein › Kleinunternehmerregelung.
+wp option update woocommerce_gzd_small_enterprise_text "Umsatzsteuerbefreit gemäß § 19 UStG."
 # Preisauszeichnung in Produktlisten: Das Theme setzt die Germanized-Blöcke „Steuerhinweis“ und
 # „Versandkostenhinweis“ direkt unter den Preis. Germanizeds automatische Ausgabe unter der
 # Warenkorb-Schaltfläche wird abgeschaltet, sonst erscheinen beide Hinweise doppelt.

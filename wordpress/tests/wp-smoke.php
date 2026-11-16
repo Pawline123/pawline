@@ -48,6 +48,7 @@ $t( 'Währung EUR', 'EUR' === get_woocommerce_currency() );
 $t( 'Steuerberechnung aus (§ 19 UStG)', 'no' === get_option( 'woocommerce_calc_taxes' ) );
 $t( 'Gastbestellung erlaubt', 'yes' === get_option( 'woocommerce_enable_guest_checkout' ) );
 $t( 'Germanized Kleinunternehmer-Option gesetzt (Optionsname im Backend prüfen!)', 'yes' === get_option( 'woocommerce_gzd_small_enterprise' ), true );
+$t( 'Kleinunternehmerhinweis einheitlich: „Umsatzsteuerbefreit gemäß § 19 UStG.“', function_exists( 'wc_gzd_get_small_business_notice' ) && 'Umsatzsteuerbefreit gemäß § 19 UStG.' === wp_strip_all_tags( wc_gzd_get_small_business_notice() ), false );
 foreach ( array( 'cart', 'checkout', 'myaccount', 'shop' ) as $page ) {
 	$t( "Shopseite vorhanden: {$page}", wc_get_page_id( $page ) > 0 );
 }

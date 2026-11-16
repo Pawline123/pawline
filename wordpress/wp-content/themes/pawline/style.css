@@ -99,3 +99,49 @@ Tags: e-commerce, block-patterns, full-site-editing, wide-blocks
 		display: block;
 	}
 }
+
+/* Kopfbereich auf dem Handy: eine Zeile – Titel | Menü (☰) | Konto | Warenkorb.
+   Tippflächen mindestens 44 × 44 px. Abstand zum Inhalt (Brotkrumen) ca. 20 px. */
+@media (max-width: 781px) {
+	.pawline-header > .wp-block-group.alignwide {
+		flex-wrap: nowrap;
+		gap: 0.25rem;
+		align-items: center;
+	}
+	.pawline-header > .wp-block-group.alignwide > .wp-block-group:first-child {
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+	.pawline-header .wp-block-site-title {
+		font-size: var(--wp--preset--font-size--medium, 1.125rem);
+		line-height: 1.2;
+		overflow-wrap: anywhere;
+	}
+	.pawline-header > .wp-block-group.alignwide > .wp-block-navigation {
+		flex: 0 0 auto;
+		order: 2;
+	}
+	.pawline-header > .wp-block-group.alignwide > .wp-block-group:last-child {
+		flex: 0 0 auto;
+		order: 3;
+		gap: 0;
+	}
+	.pawline-header .wp-block-navigation__responsive-container-open,
+	.pawline-header .wc-block-customer-account a,
+	.pawline-header .wc-block-mini-cart__button {
+		min-width: 44px;
+		min-height: 44px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0;
+	}
+	.wp-site-blocks > main.pawline-section {
+		margin-block-start: 0;
+		padding-top: 1.25rem;
+	}
+	main.pawline-section > .wp-block-woocommerce-breadcrumbs:first-child,
+	main.pawline-section > .woocommerce-breadcrumb:first-child {
+		margin-top: 0;
+	}
+}

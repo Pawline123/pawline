@@ -22,7 +22,9 @@ const record = (area, name, ok, detail = '', warnOnly = false) => {
 };
 
 // § 19 UStG: Hinweis muss erscheinen, Steuerausweis darf nicht erscheinen.
-const NOTICE = /§\s*19\s*UStG|Kleinunternehmer/i;
+// Einheitlicher Wortlaut aus den Germanized-Einstellungen (setup-wp.sh). Der alte Germanized-Standardtext zählt nicht.
+const NOTICE = /Umsatzsteuerbefreit\s+gemäß\s+§\s*19\s+UStG\./i;
+const OLD_NOTICE = /Kein Mehrwertsteuerausweis|keine Umsatzsteuer berechnet/i;
 const TAX_SHOWN = /(inkl\.|inklusive|zzgl\.|zuzüglich)\s*(\d+([,.]\d+)?\s*%\s*)?(MwSt|USt|Mehrwertsteuer|Umsatzsteuer)|\b\d+([,.]\d+)?\s*%\s*(MwSt|USt)\b/i;
 
 // Prüft, ob der § 19-Hinweis DIREKT beim Preis bzw. Gesamtbetrag steht (Abstand in Pixeln, gleiche Spalte).
@@ -70,12 +72,16 @@ async function checkNoTaxShown(area, page) {
   const all = await page.innerText('body');
   const tax = all.match(TAX_SHOWN);
   record(area, 'Kein Umsatzsteuerausweis', !tax, tax ? `gefunden: „${context(all, tax.index)}“` : '');
+  const old = all.match(OLD_NOTICE);
+  record(area, 'Kein abweichender alter Hinweistext', !old, old ? `gefunden: „${context(all, old.index)}“` : '');
 }
 function checkTaxText(area, text) {
   const notice = text.match(NOTICE);
   record(area, 'Kleinunternehmerhinweis sichtbar', !!notice, notice ? `„${context(text, notice.index)}“` : 'kein „§ 19 UStG“/„Kleinunternehmer“');
   const tax = text.match(TAX_SHOWN);
   record(area, 'Kein Umsatzsteuerausweis', !tax, tax ? `gefunden: „${context(text, tax.index)}“` : '');
+  const old = text.match(OLD_NOTICE);
+  record(area, 'Kein abweichender alter Hinweistext', !old, old ? `gefunden: „${context(text, old.index)}“` : '');
 }
 function context(text, i) {
   return text.slice(Math.max(0, i - 40), i + 80).replace(/\s+/g, ' ').trim();
