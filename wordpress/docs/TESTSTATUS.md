@@ -1,5 +1,14 @@
 # Teststatus
 
+## Zusatz 16.11.2026 – Vorbereitung einer privaten Codespaces-Vorschau
+
+- Neue Konfiguration: `.devcontainer/devcontainer.json`, Compose-Override und `scripts/codespaces-preview.sh`; Bedienung: `docs/VORSCHAU-HANDY.md`.
+- Lokal geprüft: JSON/YAML-Struktur, Bash-Syntax und **8/8 isolierte Lifecycle-Tests** mit simuliertem Docker (`tests/test_codespaces_preview.py`). Darunter Start außerhalb Codespaces abgewiesen, ungültige URL-Bestandteile abgewiesen, getrennte zufällige Zugangsdaten ohne Ausgabe im Protokoll, Berechtigung 0600, Wiederaufnahme ohne Neuinstallation, erneuter Versuch nach teilweise fehlgeschlagenem Setup sowie Stoppen ohne Datenlöschung. Die lokale `.env` bleibt unverändert.
+- **Nicht geprüft:** echter Codespaces-/Docker-Start, privater Zugriff über die erzeugte URL, HTTPS-/Login-Ablauf. In der aktuellen Bearbeitungsumgebung sind weder Docker noch PHP installiert. Es wurde kein Codespace gestartet und keine neue laufende Vorschau behauptet.
+- Der neue Workflow `.github/workflows/codespaces-preview.yml` prüft diese Vorbereitung zusätzlich; er startet keine Vorschau. Sein tatsächlicher Laufstatus ist separat auf GitHub zu prüfen.
+- Persönliches Nutzungskontingent/Abrechnung vor dem Codespaces-Start prüfen. Ports 8080 und 8025 müssen Private bleiben. Kein DNS-Wechsel, keine Veröffentlichung des Shops.
+
+
 Bitte nach jeder Prüfung aktualisieren. Nur eintragen, was tatsächlich ausgeführt wurde.
 
 ## Stand 16.11.2026 – GitHub Actions (Workflow „WordPress-Prüfung“)
@@ -141,3 +150,4 @@ Warenkorb (`/warenkorb/`), Kasse (`/kasse/`), Mein Konto (`/mein-konto/`), Shop;
 | `tests/wp-smoke.php` | Geschrieben, nicht ausgeführt. |
 
 Nächster Schritt: auf dem PC `pruefen → start → setup → demo → test`, dann `docs/TESTPLAN.md` T-01 bis T-27.
+

@@ -1,0 +1,30 @@
+{
+  "name": "Pawline – private WordPress-Vorschau",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:4": {}
+  },
+  "remoteUser": "vscode",
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "8gb",
+    "storage": "32gb"
+  },
+  "forwardPorts": [8080, 8025],
+  "portsAttributes": {
+    "8080": {
+      "label": "Pawline Testshop – PRIVATE lassen",
+      "protocol": "http",
+      "onAutoForward": "notify"
+    },
+    "8025": {
+      "label": "Pawline Test-E-Mails – PRIVATE lassen",
+      "protocol": "http",
+      "onAutoForward": "silent"
+    }
+  },
+  "otherPortsAttributes": {
+    "onAutoForward": "ignore"
+  },
+  "postStartCommand": "bash wordpress/scripts/codespaces-preview.sh start"
+}
