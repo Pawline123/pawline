@@ -95,7 +95,8 @@ try {
   }
   await page.goto(urls.cart, { waitUntil: 'networkidle' });
   // Der Warenkorb-Block lädt die Positionen per JavaScript nach.
-  await page.waitForSelector('.wc-block-cart-items__row, .woocommerce-cart-form .cart_item', { state: 'visible', timeout: 30000 }).catch(() => {});
+  // Zuerst erscheinen leere Platzhalterzeilen; erst der Produktname zeigt, dass die Daten da sind.
+  await page.waitForSelector('.wc-block-cart-items__row .wc-block-components-product-name, .woocommerce-cart-form .cart_item .product-name a', { state: 'visible', timeout: 30000 }).catch(() => {});
   await page.waitForTimeout(500);
   const cText = await page.innerText('body');
   const cartOk = cText.includes('[DEMO] Einfaches Produkt') && /19,90\s*€/.test(cText);
