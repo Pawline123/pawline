@@ -6,7 +6,7 @@ Bitte nach jeder Prüfung aktualisieren. Nur eintragen, was tatsächlich ausgef�
 
 **Umgebung:** GitHub-Runner `ubuntu-24.04`, Docker-Testumgebung aus `docker-compose.yml` (Apache, PHP 8.3, MariaDB 11.4, Mailpit), Chromium über Playwright 1.49.1.
 **Installiert durch `setup-wp.sh`:** WordPress (aktuell), WooCommerce 11.3.0, Germanized 4.1.7, ATUM 2.0.7, WooCommerce Stripe Gateway 11.2.0, Theme `pawline` 0.1.0, Plugin `pawline-dropship` 0.1.0. **Nicht installiert:** Germanized Pro (Lizenz fehlt).
-**Aktueller Stand:** Lauf 12 (Commit 7eb02e5) – alle Schritte grün, einschließlich Handy-Ansicht, Verwaltung und Editor. Screenshots jedes Laufs: Branch `ci-screenshots` (https://github.com/Pawline123/pawline/tree/ci-screenshots). Erster vollständig grüner Lauf: Lauf 6.
+**Aktueller Stand:** Lauf 16 (Commit ba704e8) – alle Schritte grün, einschließlich Handy-Ansicht, Verwaltung und Editor; einheitlicher § 19-Hinweis und neuer Handy-Kopfbereich. Screenshots jedes Laufs: Branch `ci-screenshots` (https://github.com/Pawline123/pawline/tree/ci-screenshots). Erster vollständig grüner Lauf: Lauf 6.
 **Alle Läufe:** https://github.com/Pawline123/pawline/actions/workflows/wordpress.yml – Bericht je Lauf in der Job-Zusammenfassung, Screenshots/Protokolle im Artefakt `wordpress-testergebnisse`.
 
 ### ✅ In WordPress geprüft (automatisch)
@@ -26,7 +26,7 @@ Bitte nach jeder Prüfung aktualisieren. Nur eintragen, was tatsächlich ausgef�
 
 Gastbestellung „[DEMO] Einfaches Produkt“ mit der **nur in der CI** aktivierten Offline-Zahlart „Überweisung (nur CI-Test)“ und „Versand (nur CI-Test)“ ohne Kosten.
 
-**§ 19-Prüfung (seit Lauf 9 streng):** Der Hinweis muss geometrisch direkt beim Preis bzw. Gesamtbetrag stehen (gleiche Spalte, max. 48 px unter dem Preis, 60–80 px unter der Gesamtsumme). Treffer im Kopf- oder Fußbereich zählen **nie**; steht der Hinweis nur dort, schlägt der Test fehl. Text überall aus Germanized: „Kein Mehrwertsteuerausweis, da Kleinunternehmer nach §19 (1) UStG.“
+**§ 19-Prüfung (seit Lauf 9 streng):** Der Hinweis muss geometrisch direkt beim Preis bzw. Gesamtbetrag stehen (gleiche Spalte, max. 48 px unter dem Preis, 60–80 px unter der Gesamtsumme). Treffer im Kopf- oder Fußbereich zählen **nie**; steht der Hinweis nur dort, schlägt der Test fehl. Text überall aus Germanized, seit Lauf 14 einheitlich: **„Umsatzsteuerbefreit gemäß § 19 UStG.“** (Option `woocommerce_gzd_small_enterprise_text` in `setup-wp.sh`; Fußbereich gleichlautend). Die Tests akzeptieren nur diesen Wortlaut und melden den alten Germanized-Standardtext als Fehler.
 
 | Schritt | Ergebnis (Lauf 9) |
 |---|---|
@@ -51,7 +51,9 @@ Gastbestellung „[DEMO] Einfaches Produkt“ mit der **nur in der CI** aktivier
 | Warenkorb | „Weiter zur Kasse“ 342 × 51 px; § 19-Hinweis unter der Gesamtsumme |
 | Kasse | „Jetzt kaufen“ 342 × 48 px; § 19-Hinweis 46 px unter „Bestellübersicht 19,90 €“ (Lauf 11 noch Fehler: WooCommerce klappt die Übersicht auf dem Handy zu → behoben, siehe Befunde) |
 
-**Gestalterische Beobachtungen (nicht geändert, Entscheidung offen):** Konto-/Warenkorb-Symbol stehen auf dem Handy in einer eigenen Zeile links statt neben dem Menü; ca. 70 px Leerraum zwischen Kopfbereich und Brotkrumen; der lange Germanized-Text bricht in zweispaltigen Produktkarten auf vier Zeilen um (kürzerer Text in den Germanized-Einstellungen möglich); auf der Startseite fehlen bei „Neu im Shop“ die Bildflächen, solange Produkte kein Bild haben.
+**Kopfbereich (seit Lauf 16):** eine Zeile Titel | ☰ | Konto | Warenkorb (Kopfhöhe 45 px), Tippflächen je 44 × 44 px, Abstand Kopfbereich → Brotkrumen/Seitentitel auf allen geprüften Seiten 20 px (vorher ca. 70 px). `mobile.mjs` prüft Zeile, Reihenfolge, Tippflächen und Abstand (12–28 px).
+
+**Gestalterische Beobachtungen (offen):** Auf der Startseite fehlen bei „Neu im Shop“ die Bildflächen, solange Produkte kein Bild haben. Der Testtitel „Pawline (TESTUMGEBUNG)“ bricht im Kopfbereich zweizeilig um (mit „Pawline“ nicht).
 
 ### ✅ Verwaltung (`tests/e2e/admin.mjs` + `tests/ci/verify-admin.php`) – Lauf 11/12
 
