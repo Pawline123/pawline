@@ -75,3 +75,34 @@ function pawline_order_confirmation_small_business_notice( $content ) {
 	}
 	return $content . '<div class="pawline-order-total-notice">' . $notice . '</div>';
 }
+
+add_filter( 'render_block', 'pawline_checkout_mobile_small_business_notice', 1100, 2 );
+/**
+ * Kasse (Block-Kasse mit Germanized): Kleinunternehmerhinweis auch auf dem Handy direkt beim Gesamtbetrag.
+ *
+ * Germanized setzt vor „Jetzt kaufen“ eine Bestellübersicht ein, die den Hinweis enthält. Auf schmalen
+ * Bildschirmen klappt WooCommerce diese Übersicht zu („Bestellübersicht 19,90 €“) – der Hinweis ist dann
+ * nicht sichtbar. Hier wird Germanizeds eigene Vorlage (global/small-business-info.php) zwischen Übersicht
+ * und Schaltfläche gesetzt; per CSS nur bei schmaler Ansicht sichtbar (breit steht er in der Übersicht).
+ * Keine eigene Steuerlogik; nur wenn Germanized die Kleinunternehmerregelung meldet.
+ *
+ * @param string $content Gerendertes Block-HTML.
+ * @param array  $block   Block-Daten.
+ * @return string
+ */
+function pawline_checkout_mobile_small_business_notice( $content, $block ) {
+	if ( 'woocommerce/checkout' !== ( $block['blockName'] ?? '' ) || ! function_exists( 'wc_gzd_is_small_business' ) || ! wc_gzd_is_small_business() ) {
+		return $content;
+	}
+	$summary = '<div data-block-name="woocommerce/checkout-order-summary-block" class="wp-block-woocommerce-checkout-order-summary-block"></div>';
+	$pos     = strpos( (string) $content, '<div class="wc-gzd-checkout-submit">' . $summary );
+	if ( false === $pos || false !== strpos( (string) $content, 'pawline-checkout-tax-notice' ) ) {
+		return $content;
+	}
+	$notice = wc_get_template_html( 'global/small-business-info.php' );
+	if ( '' === trim( $notice ) ) {
+		return $content;
+	}
+	$insert_at = $pos + strlen( '<div class="wc-gzd-checkout-submit">' . $summary );
+	return substr( $content, 0, $insert_at ) . '<div class="pawline-checkout-tax-notice">' . $notice . '</div>' . substr( $content, $insert_at );
+}

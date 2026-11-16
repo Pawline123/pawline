@@ -103,6 +103,22 @@ try {
   await page.waitForSelector('.wc-block-checkout', { timeout: 30000 }).catch(() => {});
   await page.waitForTimeout(2500); // Summen laden asynchron
   await checkPage('Kasse', { buttons: ['.wc-block-components-checkout-place-order-button, #place_order', '#email'] });
+  // Hinweis muss direkt unter dem (zugeklappten) Gesamtbetrag stehen – nicht nur im Fußbereich.
+  const near = await page.evaluate((src) => {
+    const re = new RegExp(src, 'i');
+    const vis = (e) => { const b = e.getBoundingClientRect(); return b.width > 0 && b.height > 0; };
+    const anchors = [...document.querySelectorAll('.wc-block-components-checkout-order-summary__title, .wc-block-components-totals-footer-item')].filter(vis);
+    const notices = [...document.querySelectorAll('main *')].filter((e) => re.test(e.textContent) && ![...e.children].some((c) => re.test(c.textContent)) && vis(e) && !e.closest('header, footer, .wp-block-template-part'));
+    for (const a of anchors) {
+      const ab = a.getBoundingClientRect();
+      for (const n of notices) {
+        const gap = Math.round(n.getBoundingClientRect().top - ab.bottom);
+        if (gap >= -4 && gap <= 80) return { ok: true, gap, anchor: a.textContent.replace(/\s+/g, ' ').trim().slice(0, 40) };
+      }
+    }
+    return { ok: false, anchors: anchors.map((a) => a.textContent.replace(/\s+/g, ' ').trim().slice(0, 40)), notices: notices.length };
+  }, NOTICE.source);
+  record('Kasse', '§ 19-Hinweis direkt beim Gesamtbetrag (≤ 80 px)', near.ok, near.ok ? `${near.gap} px unter „${near.anchor}“` : `Gesamtbetrag: ${near.anchors.join(' | ') || 'nicht gefunden'}; Hinweise im Inhalt: ${near.notices}`);
   await shot('5-kasse');
 } catch (e) {
   record('Ablauf', 'Unerwarteter Fehler', false, e.message.split('\n')[0]);

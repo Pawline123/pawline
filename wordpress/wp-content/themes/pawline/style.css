@@ -83,3 +83,19 @@ Tags: e-commerce, block-patterns, full-site-editing, wide-blocks
 		animation: none !important;
 	}
 }
+
+/* Kasse: Germanized-Kleinunternehmerhinweis unter der zugeklappten Bestellübersicht (nur schmale Ansicht,
+   breit steht er in der aufgeklappten Übersicht). Siehe pawline_checkout_mobile_small_business_notice(). */
+.pawline-checkout-tax-notice {
+	display: none;
+	font-size: var(--wp--preset--font-size--small, 0.875rem);
+	margin: 0.25rem 0 1rem;
+}
+.pawline-checkout-tax-notice .wc-gzd-additional-info {
+	margin: 0;
+}
+@media (max-width: 781px) {
+	.pawline-checkout-tax-notice {
+		display: block;
+	}
+}
