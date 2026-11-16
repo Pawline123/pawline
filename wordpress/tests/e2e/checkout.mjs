@@ -25,9 +25,28 @@ const record = (area, name, ok, detail = '', warnOnly = false) => {
 const NOTICE = /§\s*19\s*UStG|Kleinunternehmer/i;
 const TAX_SHOWN = /(inkl\.|inklusive|zzgl\.|zuzüglich)\s*(\d+([,.]\d+)?\s*%\s*)?(MwSt|USt|Mehrwertsteuer|Umsatzsteuer)|\b\d+([,.]\d+)?\s*%\s*(MwSt|USt)\b/i;
 
-function checkTaxTexts(area, text) {
+async function checkTaxTexts(area, page) {
+  const all = await page.innerText('body');
+  // Hauptbereich ohne Kopf-/Fußbereich des Themes (dort steht ein fester § 19-Text).
+  const main = await page.evaluate(() => {
+    const m = document.querySelector('main') || document.body;
+    const clone = m.cloneNode(true);
+    clone.querySelectorAll('header, footer, .wp-block-template-part').forEach((e) => e.remove());
+    return clone.innerText;
+  });
+  const inMain = main.match(NOTICE);
+  const inAll = all.match(NOTICE);
+  if (inMain) {
+    record(area, 'Kleinunternehmerhinweis im Inhalt (Germanized)', true, `„${context(main, inMain.index)}“`);
+  } else {
+    record(area, 'Kleinunternehmerhinweis im Inhalt (Germanized)', false, inAll ? `nur im Kopf-/Fußbereich: „${context(all, inAll.index)}“` : 'kein „§ 19 UStG“/„Kleinunternehmer“ auf der Seite', !!inAll);
+  }
+  const tax = all.match(TAX_SHOWN);
+  record(area, 'Kein Umsatzsteuerausweis', !tax, tax ? `gefunden: „${context(all, tax.index)}“` : '');
+}
+function checkTaxText(area, text) {
   const notice = text.match(NOTICE);
-  record(area, 'Kleinunternehmerhinweis sichtbar', !!notice, notice ? `„${context(text, notice.index)}“` : 'kein „§ 19 UStG“/„Kleinunternehmer“ im Seitentext');
+  record(area, 'Kleinunternehmerhinweis sichtbar', !!notice, notice ? `„${context(text, notice.index)}“` : 'kein „§ 19 UStG“/„Kleinunternehmer“');
   const tax = text.match(TAX_SHOWN);
   record(area, 'Kein Umsatzsteuerausweis', !tax, tax ? `gefunden: „${context(text, tax.index)}“` : '');
 }
@@ -64,7 +83,7 @@ try {
   const pText = await page.innerText('body');
   record('Produktseite', 'Titel „[DEMO] Einfaches Produkt“', pText.includes('[DEMO] Einfaches Produkt'));
   record('Produktseite', 'Preis 19,90 €', /19,90\s*€/.test(pText));
-  checkTaxTexts('Produktseite', pText);
+  await checkTaxTexts('Produktseite', page);
   await shot('1-produkt');
 
   // 2. Warenkorb
@@ -75,11 +94,13 @@ try {
     await page.waitForTimeout(1500);
   }
   await page.goto(urls.cart, { waitUntil: 'networkidle' });
-  await page.waitForSelector('.wc-block-cart-items, .woocommerce-cart-form, .wc-block-cart__empty-cart__title, .cart-empty', { timeout: 20000 }).catch(() => {});
+  // Der Warenkorb-Block lädt die Positionen per JavaScript nach.
+  await page.waitForSelector('.wc-block-cart-items__row, .woocommerce-cart-form .cart_item', { state: 'visible', timeout: 30000 }).catch(() => {});
+  await page.waitForTimeout(500);
   const cText = await page.innerText('body');
   record('Warenkorb', 'Demoprodukt im Warenkorb', cText.includes('[DEMO] Einfaches Produkt'));
   record('Warenkorb', 'Summe 19,90 €', /19,90\s*€/.test(cText));
-  checkTaxTexts('Warenkorb', cText);
+  await checkTaxTexts('Warenkorb', page);
   await shot('2-warenkorb');
 
   // 3. Kasse
@@ -87,7 +108,7 @@ try {
   await page.waitForSelector('.wc-block-checkout, form.checkout', { timeout: 30000 }).catch(() => {});
   const isBlock = (await page.locator('.wc-block-checkout').count()) > 0;
   record('Kasse', 'Kasse lädt', isBlock || (await page.locator('form.checkout').count()) > 0, isBlock ? 'Block-Kasse' : 'klassische Kasse');
-  checkTaxTexts('Kasse', await page.innerText('body'));
+  await checkTaxTexts('Kasse', page);
 
   const data = { email: 'ci-test@pawline.test', first: 'CI', last: 'Testkunde', street: 'Teststraße 1', zip: '10115', city: 'Berlin', phone: '030000000' };
   const missing = [];
@@ -128,7 +149,17 @@ try {
   record('Kasse', 'Summe 19,90 €', /19,90\s*€/.test(kText));
   await shot('3-kasse');
 
-  const placeBtn = await firstVisible(page, ['.wc-block-components-checkout-place-order-button', '#place_order']);
+  let placeBtn = await firstVisible(page, ['.wc-block-components-checkout-place-order-button', '#place_order', 'button.wc-gzd-place-order', 'button[type=submit].wc-block-components-button']);
+  if (!placeBtn) {
+    const byRole = page.getByRole('button', { name: /jetzt kaufen|zahlungspflichtig|bestellung aufgeben|kaufen|place order/i }).first();
+    if ((await byRole.count()) && (await byRole.isVisible().catch(() => false))) placeBtn = byRole;
+  }
+  if (!placeBtn) {
+    const buttons = await page.evaluate(() => [...document.querySelectorAll('button, input[type=submit], a.button')]
+      .filter((b) => b.offsetParent !== null)
+      .map((b) => `${b.tagName.toLowerCase()}.${(b.className || '').toString().trim().replace(/\s+/g, '.')} „${(b.innerText || b.value || '').trim().slice(0, 40)}“`));
+    console.log('Sichtbare Schaltflächen in der Kasse:\n  ' + buttons.join('\n  '));
+  }
   record('Bestellabschluss', 'Bestell-Schaltfläche vorhanden', !!placeBtn, placeBtn ? `„${(await placeBtn.innerText()).trim()}“` : '');
   if (placeBtn) {
     await placeBtn.click();
@@ -146,7 +177,7 @@ try {
     const oText = await page.innerText('body');
     record('Bestellabschluss', 'Bestellbestätigung angezeigt', true, page.url().replace(/key=[^&]+/, 'key=…'));
     record('Bestellabschluss', 'Bestellbestätigung nennt Produkt und Summe', oText.includes('[DEMO] Einfaches Produkt') && /19,90\s*€/.test(oText));
-    checkTaxTexts('Bestellbestätigung', oText);
+    await checkTaxTexts('Bestellbestätigung', page);
     await shot('4-bestaetigung');
   }
 } catch (e) {
@@ -170,7 +201,7 @@ if (orderPlaced) {
   if (msg) {
     const full = await (await fetch(`${MAILPIT}/api/v1/message/${msg.ID}`)).json();
     const text = (full.Text || '') + '\n' + (full.HTML || '').replace(/<[^>]+>/g, ' ');
-    checkTaxTexts('Bestell-E-Mail', text);
+    checkTaxText('Bestell-E-Mail', text);
     const atts = (full.Attachments || []).map((a) => a.FileName);
     record('Bestell-E-Mail', 'Rechnung als Anhang', atts.some((n) => /\.pdf$/i.test(n)), atts.length ? atts.join(', ') : 'kein Anhang (erwartet ohne Germanized Pro)', true);
   }
