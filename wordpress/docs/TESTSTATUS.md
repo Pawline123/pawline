@@ -6,7 +6,8 @@ Bitte nach jeder Prüfung aktualisieren. Nur eintragen, was tatsächlich ausgef�
 
 **Umgebung:** GitHub-Runner `ubuntu-24.04`, Docker-Testumgebung aus `docker-compose.yml` (Apache, PHP 8.3, MariaDB 11.4, Mailpit), Chromium über Playwright 1.49.1.
 **Installiert durch `setup-wp.sh`:** WordPress (aktuell), WooCommerce 11.3.0, Germanized 4.1.7, ATUM 2.0.7, WooCommerce Stripe Gateway 11.2.0, Theme `pawline` 0.1.0, Plugin `pawline-dropship` 0.1.0. **Nicht installiert:** Germanized Pro (Lizenz fehlt).
-**Läufe:** https://github.com/Pawline123/pawline/actions/workflows/wordpress.yml – Bericht je Lauf in der Job-Zusammenfassung, Screenshots/Protokolle im Artefakt `wordpress-testergebnisse`.
+**Erster vollständig grüner Lauf:** Lauf 6, https://github.com/Pawline123/pawline/actions/runs/43839938399 (alle Schritte erfolgreich).
+**Alle Läufe:** https://github.com/Pawline123/pawline/actions/workflows/wordpress.yml – Bericht je Lauf in der Job-Zusammenfassung, Screenshots/Protokolle im Artefakt `wordpress-testergebnisse`.
 
 ### ✅ In WordPress geprüft (automatisch)
 
@@ -28,7 +29,7 @@ Gastbestellung „[DEMO] Einfaches Produkt“ mit der **nur in der CI** aktivier
 | Schritt | Ergebnis |
 |---|---|
 | Produktseite | lädt, Preis 19,90 €, kein USt-Ausweis |
-| Warenkorb | Germanized-Hinweis „Kein Mehrwertsteuerausweis, da Kleinunternehmer nach §19 (1) UStG.“; Produktzeile + 19,90 €: Testskript las bis Lauf 4 die Ladeplatzhalter – Korrektur in Lauf 5, **Ergebnis ausstehend** |
+| Warenkorb | Produkt + 19,90 €; Germanized-Hinweis „Kein Mehrwertsteuerausweis, da Kleinunternehmer nach §19 (1) UStG.“ |
 | Kasse (Block-Kasse) | Germanized-Hinweis, Pflichtfelder, Zahlart, AGB/Widerruf-Bestätigung, Summe 19,90 €, Schaltfläche „Jetzt kaufen“ |
 | Bestellabschluss | Weiterleitung zur Bestellbestätigung mit Produkt und Summe |
 | Bestell-E-Mail (Mailpit) | „Bestätigung deiner Bestellung …“, mit Germanized-Hinweis, kein USt-Ausweis |

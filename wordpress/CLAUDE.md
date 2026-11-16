@@ -42,11 +42,11 @@ docker compose --profile tools run --rm wpcli php /project/tests/run.php
 
 ## Offene Aufgaben für die erste Sitzung auf dem PC
 
-1. `pruefen`, `start`, `setup`, `demo`, `test` ausführen; Ergebnisse in `docs/TESTSTATUS.md` eintragen.
+1. `pruefen`, `start`, `setup`, `demo`, `test` auf dem PC ausführen (in GitHub Actions bereits grün, siehe `docs/TESTSTATUS.md`); Ergebnisse in `docs/TESTSTATUS.md` eintragen.
 2. Website-Editor öffnen: Jede Vorlage und jedes Muster auf „Dieser Block enthält unerwarteten oder ungültigen Inhalt“ prüfen; ggf. Markup an die installierte WooCommerce-Version anpassen.
 3. **Produktfilter** in `archive-product.html` ergänzen (Block „Produktfilter“ der installierten WooCommerce-Version im Editor einfügen, exportieren, Datei übernehmen). Bewusst noch nicht enthalten, weil sich das Markup zwischen WC-Versionen ändert.
-4. Germanized-Optionsname `woocommerce_gzd_small_enterprise` in der installierten Version bestätigen (Backend-Einstellung sichtbar aktiv?).
-5. Prüfen, ob Germanized im Block-Theme den § 19-Hinweis an Produktseite, Warenkorb, Kasse anzeigt; falls nicht, die von Germanized bereitgestellten Blöcke/Einstellungen nutzen (keine eigene Steuerlogik).
+4. ~~Germanized-Optionsname bestätigen~~ – erledigt: `woocommerce_gzd_small_enterprise` wirkt in Germanized 4.1.7 (GitHub Actions, 16.11.2026). Im Backend trotzdem einmal ansehen.
+5. § 19-Hinweis: Warenkorb, Kasse und Bestell-E-Mail zeigen ihn (GitHub Actions); **Produktseite und Bestellbestätigung nur über den Theme-Fußbereich**. Prüfen, falls nicht, die von Germanized bereitgestellten Blöcke/Einstellungen nutzen (keine eigene Steuerlogik).
 6. Festlegen, ob Versand/Tracking über Germanized-Sendungen oder das Pawline-Feld geführt wird (Doppelpflege vermeiden).
 7. Testplan `docs/TESTPLAN.md` abarbeiten (Germanized-Pro-Tests erst mit Lizenz).
 
