@@ -127,7 +127,7 @@ Tags: e-commerce, block-patterns, full-site-editing, wide-blocks
 		gap: 0;
 	}
 	.pawline-header .wp-block-navigation__responsive-container-open,
-	.pawline-header .wc-block-customer-account a,
+	.pawline-header .wp-block-woocommerce-customer-account a,
 	.pawline-header .wc-block-mini-cart__button {
 		min-width: 44px;
 		min-height: 44px;

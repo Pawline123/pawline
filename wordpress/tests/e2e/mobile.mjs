@@ -66,7 +66,7 @@ async function checkHeader(area, { cart = true } = {}) {
     const first = document.querySelector('main .wp-block-woocommerce-breadcrumbs, main .woocommerce-breadcrumb, main h1');
     return {
       menu: box('.pawline-header .wp-block-navigation__responsive-container-open'),
-      account: box('.pawline-header .wc-block-customer-account a'),
+      account: box('.pawline-header .wp-block-woocommerce-customer-account a'),
       cart: box('.pawline-header .wc-block-mini-cart__button'),
       headerH: header ? Math.round(header.height) : null,
       gap: header && first ? Math.round(first.getBoundingClientRect().top - header.bottom) : null,
