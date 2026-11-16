@@ -1,0 +1,7 @@
+# Shell-Skripte laufen im Linux-Container: immer LF-Zeilenenden, auch unter Windows.
+*.sh  text eol=lf
+*.php text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.ps1 text eol=crlf

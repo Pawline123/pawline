@@ -1,0 +1,220 @@
+Pawline: Shop, Rechnungen und Warenwirtschaft mit Claude Code
+
+Stand: 15. November 2026. Vorbereitete Projektspezifikation; noch kein implementierter oder veröffentlichter Shop.
+
+1. Festgelegtes Ziel
+
+Tim möchte seinen bestehenden Pawline-Shop von Shopify ablösen. Benötigt werden eine neue Website, eine Online-Kasse und eine Verwaltung, mit der er Inhalte und Gestaltung einfach verändern kann. Bestellungen beim Dropshipping-Lieferanten werden weiterhin manuell aufgegeben. Ein Kassensystem für Verkäufe vor Ort wird nicht benötigt.
+
+Zusätzlich gehören Kundenrechnungen, Stornobelege und eine zentrale Verwaltung für Artikel, Kunden, Lieferanten, Einkauf und Bestellungen zum Ziel. Kunden erhalten ihre Verkaufsrechnung; Tim kann dasselbe Dokument für seine Unterlagen abrufen. Eingangsrechnungen seiner Lieferanten werden getrennt davon erfasst.
+
+Tim bestätigt die Anwendung der Kleinunternehmerregelung ohne Umsatzsteuerausweis. Diese Angabe ist die Grundlage für die geplante Einrichtung der steuerfreien Ausgangsumsätze nach § 19 UStG.
+
+Bestätigt sind ein Windows-PC und die bereits vorhandene Domain pawline-shop.de. Der Windows-PC wird für Entwicklung mit Claude Code und die Verwaltung im Browser eingeplant. Der öffentliche Shop läuft auf Webhosting und bleibt dadurch auch bei ausgeschaltetem PC erreichbar. Dies ist die vorgesehene Betriebsweise; ein öffentliches Hosting vom Heim-PC aus ist nicht eingerichtet.
+
+Das Budget für Hosting und Shopsoftware beträgt maximal 30 € monatlich. Zahlungsgebühren und KI-Abos sind davon ausdrücklich ausgenommen. Externe Entwicklungs- und Wartungsleistungen sind in der folgenden Technikrechnung nicht enthalten.
+
+Claude Code soll das Projekt entwickeln, testen und bei späteren Änderungen weiterbearbeiten. WordPress und WooCommerce sollen auf Webhosting laufen. Eine Verbindung zu ChatGPT soll ausgewählte aktuelle Shopdaten und Änderungen zugänglich machen.
+
+2. Empfohlener Aufbau und Budget
+
+Empfehlung für die erste Version: selbst gehostetes WordPress mit WooCommerce und einem individuell entwickelten Block-Theme. Der WordPress-Seiteneditor übernimmt die visuelle Bearbeitung. Shopfunktionen und Zahlungsvorgänge verwenden die bestehenden WooCommerce-Funktionen und offiziellen Zahlungs-Erweiterungen.
+
+Bestandteil: Webhosting • Vorschlag: Beispiel ALL-INKL Premium; regulärer Preis einschließlich deutscher Umsatzsteuer • Monatliche Technikrechnung: 9,95 €
+Bestandteil: Domain und HTTPS • Vorschlag: pawline-shop.de weiterverwenden; Domain kann beim bisherigen Registrar bleiben. Zusatzkosten des bestehenden Domainvertrags prüfen • Monatliche Technikrechnung: HTTPS im Hostingpaket; Domainkosten abhängig vom Vertrag
+Bestandteil: WordPress und WooCommerce • Vorschlag: Kostenlose Kernsoftware • Monatliche Technikrechnung: 0 € Lizenzgebühr
+Bestandteil: Seiteneditor und eigenes Theme • Vorschlag: WordPress-Blockeditor; keine zusätzliche kostenpflichtige Builder-Lizenz einplanen • Monatliche Technikrechnung: 0 € Lizenzgebühr
+Bestandteil: Kundenrechnungen und Stornierungen • Vorschlag: Germanized plus Germanized Pro für 1 Domain; aktuell 85 € für die ersten 12 Monate Updates/Support, danach optional 65 € jährlich für Verlängerung • Monatliche Technikrechnung: Erstes Jahr umgelegt ca. 7,08 €; danach ca. 5,42 € bei Verlängerung
+Bestandteil: Warenwirtschaft als Basis • Vorschlag: ATUM Free für Artikel, Einkaufspreise, Lieferanten und einfache Einkaufsbestellungen • Monatliche Technikrechnung: 0 € Lizenzgebühr
+Bestandteil: Online-Zahlungen • Vorschlag: Offizielle Stripe-Erweiterung als erste Zahlungsintegration; PayPal nach Bedarf ergänzen • Monatliche Technikrechnung: Bei Stripe keine monatliche Grundgebühr; Transaktionsgebühren separat
+Bestandteil: Summe der bezifferten Komponenten im ersten Jahr • Vorschlag: Hosting und Germanized Pro: 9,95 € × 12 + 85 € = 204,40 € jährlich • Monatliche Technikrechnung: Umgelegt ca. 17,03 €
+Bestandteil: Verbleibender Budgetspielraum im ersten Jahr • Vorschlag: Für weitere tatsächlich benötigte Technik; externe Domainkosten gegebenenfalls hiervon abziehen • Monatliche Technikrechnung: Umgelegt ca. 12,97 €
+
+Dies ist eine Rechnung für den Basisshop, keine garantierte Gesamtkalkulation für jede spätere Erweiterung. Die ChatGPT-Anbindung muss technisch und preislich erprobt werden. Weitere Domain-, E-Mail-, Rechtsdienst- oder Erweiterungsabos können den Betrag verändern. Der Hosting-Vorschlag ist noch nicht gebucht; seine Leistung für den konkreten Shop muss anhand der aktuellen Systemanforderungen und eines Testbetriebs geprüft werden. [1–3]
+
+Germanized Pro wird jährlich bezahlt, nicht in den hier umgelegten Monatsraten. Bei unveränderten Preisen beträgt die Summe mit 65 € Verlängerung in Folgejahren 184,40 € jährlich, umgelegt ca. 15,37 € monatlich. Keine Lizenz ist gekauft oder aktiviert. Die Pro-Version erweitert das kostenlose Germanized-Plugin. [7–8]
+
+Die ATUM-Basis ist eine einfache Warenwirtschaft, kein vollständiges Finanzbuchhaltungssystem. Beleganhänge an Einkaufsbestellungen und weiterführende Einkaufsprozesse bietet ATUM unter anderem im kostenpflichtigen Purchase Orders PRO. Dieser Zusatz ist nicht als kostenlos eingerechnet. Für die erste Version wird stattdessen eine schlanke Zuordnung von Lieferantenauftrag und geschützter Belegablage als eigene WooCommerce-Erweiterung geplant und gesondert getestet. Das ist Entwicklungsarbeit, keine bereits vorhandene Standardfunktion. [9–10]
+
+3. Direkt in Claude Code verwenden
+
+Lege auf deinem Windows-PC einen neuen Projektordner an, lege diese Datei hinein und öffne Claude Code in diesem Ordner. Falls Claude Code noch fehlt, ist laut offizieller Dokumentation eine native Windows-Installation möglich. Eine Installationsmöglichkeit in PowerShell ist: [11]
+
+winget install Anthropic.ClaudeCode
+
+Öffne danach eine neue PowerShell und prüfe:
+
+claude --version
+
+Erstelle bei Bedarf den Projektordner und öffne dort Claude Code. Kopiere vorher diese Datei aus deinem Downloadordner in den neuen Ordner:
+
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\Documents\Pawline"
+Set-Location "$env:USERPROFILE\Documents\Pawline"
+claude
+
+Verwende dann diesen Auftrag:
+
+Lies Pawline_Claude_Code_Startauftrag.txt vollständig und nutze sie als Projektspezifikation.
+
+Entwickle zunächst lokal eine ausführbare Testversion von Pawline mit WordPress,
+WooCommerce und einem eigenen leichten Block-Theme. Beginne mit der Prüfung der
+vorhandenen Entwicklungsumgebung und setze anschließend die ersten beiden
+Umsetzungsphasen aus dieser Spezifikation um. Verwende aktuelle stabile,
+miteinander kompatible Versionen und dokumentiere sie.
+
+Schreibe die Projektentscheidungen und üblichen Arbeitsbefehle in eine CLAUDE.md.
+Lege eine verständliche README für Start, Bearbeitung, Tests und Veröffentlichung an.
+Trenne eigene Theme-Dateien, eigene Erweiterungen und Laufzeitdaten. Bearbeite
+keine WordPress-, WooCommerce- oder fremden Plugin-Kerndateien.
+
+Nutze eine vorhandene lokale WordPress-Umgebung. Falls keine vorhanden ist,
+prüfe, ob Docker mit Compose verfügbar ist, und erstelle dann eine reproduzierbare
+lokale Umgebung. Wenn notwendige Werkzeuge fehlen, benenne das konkrete
+Hindernis und erstelle die unabhängig davon möglichen Projektdateien weiter.
+
+Entwickle Layout, editierbare Seitenbausteine und den normalen WooCommerce-Kaufablauf.
+Verwende offizielle Zahlungs-Erweiterungen; implementiere keine eigene Kartenverarbeitung.
+Berücksichtige Germanized Pro für Rechnungen und Stornierungen sowie ATUM Free
+für die einfache Warenwirtschaft. Bereite die Pro-Integration vor; kennzeichne
+fehlende Lizenzen als Voraussetzung für die entsprechenden Funktionsprüfungen.
+Baue die in Phase 2 beschriebene zentrale Dropshipping- und Belegverwaltung.
+Richte die als Kleinunternehmer steuerfreien Ausgangsumsätze ohne gesonderten
+Umsatzsteuerausweis ein. Aktiviere die Kleinunternehmer-Kennzeichnung in Germanized
+und prüfe den Rechnungshinweis nach § 19 UStG. Bewahre Lieferantenbelege
+mit ihren tatsächlichen Steuerangaben und Gesamtbeträgen auf.
+Produktdaten, Bilder und Geschäftseinstellungen dürfen nicht erfunden werden.
+Falls echte Produktdaten fehlen, verwende ausschließlich eindeutig gekennzeichnete
+Demodaten in der lokalen Testinstanz. Halte sie aus einem späteren Live-Import heraus.
+
+Führe passende Funktionsprüfungen durch und dokumentiere, was tatsächlich geprüft
+wurde. Bereite danach Migration und ChatGPT-Anbindung gemäß den folgenden
+Phasen vor. Kennzeichne fehlende Zugänge und noch nicht geprüfte Verbindungen genau.
+
+Arbeite in der Testumgebung weiter, solange fehlende Angaben nur einen späteren
+Schritt betreffen. Verändere den bestehenden Live-Shop und seine Domain nicht.
+Buche keine Dienste. Speichere keine Zugangsdaten im Repository.
+
+4. Umsetzungsphasen
+
+Phase 1: Lokaler Aufbau und Gestaltung
+
+Erstelle ein eigenes Block-Theme mit globalen Farben, Typografie und wiederverwendbaren Seitenabschnitten. Als Gestaltungsvorschlag dienen warme helle Naturfarben, große Produktbilder und eine ruhige, übersichtliche mobile Ansicht. Bestehendes Logo und vorhandene Markenfarben werden übernommen, sobald sie vorliegen.
+
+Baue Startseite, Produktübersicht, Kategorieseiten, Produktdetailseiten, Warenkorb, Kasse und Kontaktseite. Inhalte für rechtliche Seiten bleiben klar erkennbare, unveröffentlichte Platzhalter, bis Tim seine tatsächlichen Angaben und Texte bereitstellt. Produktübersichten sollen Suche, Kategorien und sinnvolle Filter unterstützen.
+
+Texte, Bilder, Navigation, Startseitenabschnitte, Farben und Schriftgrößen müssen im Seiteneditor oder in der Produktverwaltung bearbeitbar sein. Dokumentiere insbesondere, welche Änderungen in der Datenbank und welche im Theme gespeichert sind. Ein Theme-Update darf Tims im Editor gespeicherte Anpassungen nicht stillschweigend ersetzen. [4]
+
+Phase 2: Bestellungen und Online-Kasse
+
+Verwende die WooCommerce-Verwaltung für Produkte, Varianten, Preise, Lagerangaben, Bestellungen und Bestellstatus. Richte Gastbestellungen und die ausgewählten Zahlungsmethoden ein. Verwende für Zahlungsprüfungen den Testmodus des jeweiligen Anbieters.
+
+Der Arbeitsablauf lautet: Bestellung im Shop → Zahlungsstatus prüfen → Tim gibt die Bestellung beim Lieferanten auf → Tim pflegt Liefer-/Versandinformationen ein. Kein automatischer Lieferantenauftrag ist Bestandteil der ersten Version. Eine tatsächlich manuelle Lieferantenbearbeitung im Shop muss möglich und verständlich dokumentiert sein.
+
+Versandkosten, Liefergebiete, Lieferzeiten, Steuerbehandlung und Rücksendeprozess werden erst nach Tims tatsächlichen Angaben konfiguriert. Übernehme keine veralteten Werte aus Erinnerungen. Gib nicht vor, Lieferantenbestände oder Versandstatus automatisch aktuell zu halten.
+
+Phase 2a: Kundenrechnungen und eigene Unterlagen
+
+Germanized Pro ist der vorgeschlagene Baustein für Rechnungen, Stornierungen, Lieferscheine und Belegexporte. Verwende seine dokumentierten Funktionen, anstatt eine zweite eigene Rechnungsnummernlogik zu entwickeln. Das Layout wird an Pawline angepasst. [7–8]
+
+Die Rechnungserstellung soll anhand des festgelegten Bestellablaufs automatisch ausgelöst werden können. Kunden erhalten das Dokument per E-Mail; Tim kann dasselbe ausgestellte Dokument im Verwaltungsbereich herunterladen. Für seine Unterlagen wird keine zweite, abweichende Verkaufsrechnung erzeugt. Die aus der bisherigen Rechnungsführung fortzusetzenden Nummern und Nummernkreise sind vor dem Live-Start zu klären.
+
+Anforderungen: eindeutige fortlaufende Rechnungsnummern, korrekte Unternehmens- und Rechnungsdaten, nachvollziehbare Verknüpfung mit Bestellung und Zahlung sowie passende Storno- oder Rechnungskorrekturbelege bei Erstattungen. Festgeschriebene Dokumente dürfen durch spätere Produktpreis- oder Stammdatenänderungen nicht unbemerkt neu geschrieben werden. Eine erneute Zusendung darf keine neue Rechnung für denselben Vorgang erzeugen. Voll- und Teilerstattungen müssen geprüft werden.
+
+Tim hat bestätigt, dass er als Kleinunternehmer ohne Umsatzsteuerausweis abrechnet. Konfiguriere die entsprechend steuerfreien Ausgangsumsätze nach § 19 UStG und die Kleinunternehmer-Kennzeichnung in Germanized. Zeige die tatsächlich zu zahlenden Endpreise an; vermeide einen gesonderten Umsatzsteuerbetrag und unpassende Angaben wie „inkl. 19 % MwSt.“. Die Steuerbefreiung darf für Kunden nicht als gewöhnlicher Umsatz mit 0 % Umsatzsteuer dargestellt werden. Prüfe Produktseite, Warenkorb, Kasse, Bestell-E-Mails, Rechnung und Rechnungskorrekturen. [13–14]
+
+Vorgesehener Rechnungshinweis: „Für diesen Umsatz gilt die Steuerbefreiung für Kleinunternehmer gemäß § 19 UStG.“ Verwende denselben Hinweis sinngemäß bei der Preisauszeichnung im Shop. Ergänze die tatsächlichen Rechnungsangaben, insbesondere Namen, Anschriften, betriebliche Steuerkennung, Ausstellungsdatum und Leistungsbeschreibung, anhand der von Tim bereitgestellten Daten. Erfinde keine Kennungen. Die Kleinunternehmerkonfiguration ist damit entschieden; der Live-Rechnungsversand bleibt bis zur vollständigen Einrichtung und einem erfolgreichen Belegtest gesperrt. [13]
+
+In der Einkaufsverwaltung bleiben die Originalbeträge und Steuerangaben der Lieferanten unverändert. Für Umsätze unter der Kleinunternehmerbefreiung wird keine abziehbare Vorsteuer angesetzt; kalkuliere die entsprechenden Einkaufskosten einschließlich nicht abziehbarer Umsatzsteuer. Das betrifft beispielsweise eine mit Umsatzsteuer ausgestellte inländische Lieferantenrechnung. Besondere grenzüberschreitende Vorgänge sind separat zu konfigurieren und werden nicht pauschal durch die Kleinunternehmereinstellung erledigt. [15]
+
+Bereite die Ausgabe strukturierter E-Rechnungen vor, sofern sie für den tatsächlichen Geschäftsvorgang benötigt wird. Die BMF-Regeln zur verpflichtenden E-Rechnung betreffen nicht Privatkundenrechnungen; Unternehmen müssen jedoch grundsätzlich E-Rechnungen empfangen können. Der Steuerstatus und die jeweilige Geschäftsart werden separat geklärt. [12]
+
+Phase 2b: Zentrale Waren- und Einkaufsverwaltung
+
+Erstelle innerhalb der WordPress-Verwaltung einen übersichtlichen Einstieg für Tim mit diesen Bereichen:
+
+Bereich: Überblick • Geplante Funktionen: Offene Kundenaufträge, ausstehende Lieferantenbestellungen und Aufgaben
+Bereich: Artikel • Geplante Funktionen: Artikelnummer, Varianten, Verkaufspreis, Lieferant und Einkaufspreis
+Bereich: Kundenaufträge • Geplante Funktionen: Zahlung, Rechnung, Erstattung und Bearbeitungsstand
+Bereich: Lieferanten • Geplante Funktionen: Kontaktdaten, Lieferantenartikelnummern und zugeordnete Artikel
+Bereich: Einkauf • Geplante Funktionen: Zuordnung zu Kundenbestellungen, externe Lieferantenauftragsnummer, Einkaufsbetrag, Währung und Status
+Bereich: Versand • Geplante Funktionen: Manuell eingepflegte Versandinformationen und Trackingnummern, auch für mehrere Pakete
+Bereich: Belege • Geplante Funktionen: Ausgangsrechnungen sowie getrennte Eingangsrechnungen mit geschütztem Zugriff
+Bereich: Auswertung • Geplante Funktionen: Umsätze, erfasste Einkaufsbeträge und transparent abgegrenzte Auswertungen
+
+Nutze vorhandene WooCommerce- und ATUM-Funktionen. Die kostenlose ATUM-Version enthält Lieferanten, Einkaufspreise und einfache Einkaufsbestellungen. Prüfe zuerst ihren konkreten Funktionsumfang mit der verwendeten WooCommerce-Version. Erweitere nur die fehlende Zuordnung zum Dropshipping-Kundenauftrag und die geschützte Belegablage über ein eigenes kleines Plugin. [9–10]
+
+Der Einkauf bleibt manuell: Eine Kundenbestellung wird als Aufgabe sichtbar; Tim kauft im Lieferantenportal ein und trägt anschließend Auftragsnummer, Einkaufskosten und Status ein. Es wird keine Lieferantenbestellung automatisch versendet oder bezahlt. Ein Kundenauftrag kann bei Bedarf mehreren Lieferantenaufträgen zugeordnet werden. Eine Lieferantenrechnung kann mehrere Vorgänge abdecken.
+
+ATUM ist auf Bestandsverwaltung ausgelegt. Beim Dropshipping darf eine Lieferantenbestellung nicht fälschlich als Zugang in ein eigenes Lager gebucht werden. Prüfe die Einstellungen mit bewusst ohne eigene Mengenführung angelegten Dropshipping-Artikeln; einen eigenen Bestand nur für tatsächlich selbst gelagerte Artikel führen. Lieferantenverfügbarkeit ist ohne Datenanbindung eine manuelle Angabe.
+
+Eingangsrechnungen werden als Originalbelege vom jeweiligen Lieferanten importiert und dem Lieferanten beziehungsweise Einkauf zugeordnet. XML-Dateien strukturierter Rechnungen sollen ebenfalls erhalten bleiben. Interne Einkaufsbestellungen sind keine vom Lieferanten ausgestellten Rechnungen. Zugriffe auf diese Dateien müssen serverseitig geschützt sein; ein versteckter Medienlink reicht nicht aus. Die Ablage und Exporte sind zunächst Arbeitsfunktionen, keine Zusage einer vollständig erfüllten steuerlichen Archivierung.
+
+Zeige eine Marge nur mit eindeutig benannter Berechnungsgrundlage. Nettobeträge und Bruttobeträge dürfen nicht gemischt werden. Nicht erfasste Versandkosten, Zahlungsgebühren, Erstattungen und sonstige Ausgaben werden als fehlend markiert. Die Differenz aus Verkauf und Einkauf darf nicht als vollständiger Unternehmensgewinn bezeichnet werden.
+
+Eine vollständige Finanzbuchhaltung mit Bankabgleich, Steuererklärungen oder umfassender Archivierung ist in dieser Kombination nicht enthalten. Falls Tim diese Funktionen benötigt, wird dafür ein zusätzlicher Dienst einschließlich seiner Kosten geprüft. Der Belegexport für eine Weiterverarbeitung ist Bestandteil des Projekts; ein DATEV-kompatibler Export wird nur zugesagt, wenn er tatsächlich umgesetzt und geprüft wurde.
+
+Phase 3: Shopify-Daten und Domain übernehmen
+
+Die vorhandene Domain pawline-shop.de wird weiterverwendet. Eine Neuregistrierung ist nicht nötig. Kläre, wo Domain und DNS verwaltet werden; ein Registrarwechsel ist für die Verbindung mit neuem Hosting nicht grundsätzlich erforderlich. Erhalte vorhandene E-Mail-Einträge und ändere beim späteren Wechsel nur die tatsächlich benötigten Website-Einträge.
+
+Arbeite zunächst mit einem aktuellen Shopify-Produktexport. Prüfe Importfelder für Artikelnummern, Varianten, Preise, Bilder, Kategorien und Bestandsangaben. Erstelle einen wiederholbaren Import mit Protokoll über übersprungene oder fehlerhafte Datensätze; bestehende Einträge dürfen dabei nicht unbemerkt vervielfacht werden.
+
+Erstelle eine Zuordnung bisheriger zu neuer Produkt- und Kategorieadressen. Übernehme vorhandene Metadaten, soweit der Export und die neue Struktur dies ermöglichen. Plane Weiterleitungen für geänderte URLs.
+
+Vor dem eigentlichen Wechsel: auf einer Testadresse Zahlung, Bestell-E-Mails und einen vollständigen manuellen Lieferantenablauf prüfen; Dateien und Datenbank sichern; eine Wiederherstellung erproben. Domain-, E-Mail- und Zahlungsumstellung erst mit den tatsächlichen Zugängen planen. Parallel eintreffende Bestellungen und Änderungen am bisherigen Shop beim endgültigen Datenabgleich berücksichtigen.
+
+Phase 4: Austausch mit ChatGPT
+
+Ziel ist ein authentifizierter eigener Connector. Erste Funktionen: Produkte suchen, Produktdaten lesen, Produktbeschreibungen als Entwurf ändern und zusammengefasste Verkaufszahlen lesen. Kundennamen und Adressen werden für diese erste Ausbaustufe nicht benötigt. Preise, Zahlungen und Bestellstatus sind zunächst keine schreibbaren Funktionen.
+
+Prüfe den offiziellen WordPress MCP Adapter als technischen Baustein. Dieser stellt einen HTTP-MCP-Zugang bereit; WordPress-Authentifizierung und Berechtigungen bleiben notwendig. Seine Existenz beweist noch keine direkt funktionierende ChatGPT-Verbindung. [5]
+
+ChatGPT unterstützt eigene MCP-Verbindungen mit Lese- und Schreibfunktionen. Die aktuell dokumentierte Einrichtung erfolgt im Web und unterliegt Kontoberechtigungen. Entwickle und prüfe eine passende OAuth-Anmeldung. Ein WordPress-Anwendungspasswort oder ein anonymer Endpunkt ist kein Ersatz für eine geprüfte Anmeldung an vertrauliche Shopdaten. [6]
+
+Die Anbindung soll möglichst im bestehenden Hosting betrieben werden. Prüfe dafür Hosting-Eignung, Authentifizierung und aktuelle Client-Unterstützung zuerst mit einem lesenden Testwerkzeug. Falls ein Zusatzdienst erforderlich wird, benenne dessen reguläre Kosten, bevor er eingeplant wird. Keine funktionierende oder kostenlose ChatGPT-Anbindung behaupten, solange der Test im vorgesehenen Konto fehlt.
+
+Beispiel für das spätere Arbeiten: Tim fordert in ChatGPT eine Änderung an; der Connector liest die aktuellen Produktdaten, speichert einen überarbeiteten Beschreibungsentwurf und liefert den tatsächlichen Speicherstatus zurück. Änderungen an Layout oder Programmcode bearbeitet Claude Code im Projekt und überträgt sie nach Prüfung. Eine Connector-Verbindung allein führt keine dauernden Hintergrundaufgaben aus. Solche Aufgaben wären gesondert mit Auslösern, Berechtigungen und Verbrauchsgrenzen zu entwickeln.
+
+5. Fertigkriterien
+
+- Der Shop startet aus der dokumentierten lokalen Umgebung, ohne Shopify zur Laufzeit zu benötigen.
+- Tim kann Texte, Bilder, Startseitenabschnitte und globale Gestaltung bearbeiten.
+- Eine Produktvariante lässt sich korrekt in den Warenkorb legen; Versand, Rabatte und Summen stimmen mit den konfigurierten Regeln überein.
+- Eine erfolgreiche und eine fehlgeschlagene Testzahlung liefern korrekte Bestellzustände. Wiederholte Zahlungsbenachrichtigungen führen zu keinem doppelten Auftrag.
+- Bestellbenachrichtigungen und der manuelle Lieferantenablauf wurden mit einer vollständigen Testbestellung geprüft.
+- Rechnungserstellung, E-Mail-Anhang und erneuter Download liefern das richtige Dokument; eine erneute Zusendung erzeugt keine doppelte Rechnungsnummer.
+- Bei den nach § 19 UStG steuerfreien Verkäufen erscheinen der Kleinunternehmerhinweis und die korrekten Endpreise; Produkte, Versand, Rabatte und Korrekturbelege weisen keine gesonderte Umsatzsteuer aus. Einkaufskosten berücksichtigen nicht abziehbare Umsatzsteuer.
+- Eine vollständige und eine teilweise Erstattung erzeugen passende, mit dem Original verknüpfte Korrekturbelege; bereits ausgestellte Rechnungen bleiben nachvollziehbar.
+- Ein Lieferantenauftrag ist einer Kundenbestellung zuordenbar; Eingangsbelege sind getrennt erfasst und für unberechtigte Nutzer nicht abrufbar.
+- Direktversand an Kunden erzeugt keinen erfundenen Zugang in ein eigenes Lager.
+- Umsatzauswertungen und Margen kennzeichnen ihre Steuerbasis und noch nicht erfasste Kosten.
+- Die mobile Darstellung und die Bedienung der Kasse wurden auf der Testadresse kontrolliert.
+- Importprotokoll, URL-Zuordnung sowie Sicherungs- und Wiederherstellungsanleitung liegen vor.
+- Die ChatGPT-Verbindung gilt erst nach erfolgreicher Anmeldung und überprüftem Datenabruf im vorgesehenen Konto als verbunden. Unbefugter Zugriff wird abgewiesen.
+- Die Kostenübersicht nennt reguläre wiederkehrende Preise und alle tatsächlich verwendeten Zusatzdienste.
+
+6. Noch benötigte Angaben für spätere Schritte
+
+Bekannt sind Windows als Entwicklungs- und Verwaltungsgerät, die vorhandene Domain pawline-shop.de und die Anwendung der Kleinunternehmerregelung ohne Umsatzsteuerausweis. Noch offen ist, ob Claude Code bereits installiert ist. Für den echten Import werden ein aktueller Shopify-Produktexport und vorhandene Bilddateien beziehungsweise nutzbare Bildadressen benötigt. Für den Betrieb fehlen Hostingzugang, zuständige Domainverwaltung, Zahlungsanbieterzugänge und tatsächliche Versand- und Geschäftsdaten. Für Rechnungen sind Unternehmensangaben, betriebliche Steuerkennung und bisherige Rechnungsnummern zu ergänzen. Die vorgeschlagene Germanized-Pro-Lizenz ist noch nicht vorhanden.
+
+Passwörter, Zahlungsgeheimnisse und persönliche Kundendaten gehören nicht in diese Spezifikation oder in ein gemeinsames Code-Repository. Verwende die vorgesehenen lokalen beziehungsweise serverseitigen Zugangskonfigurationen.
+
+7. Geprüfte Primärquellen
+
+Preise und Dokumentation geprüft am 15. November 2026. Angebote und Schnittstellen können sich ändern.
+
+1. ALL-INKL Premium: regulär 9,95 € monatlich, Domains, SSH und Let's-Encrypt-Option im Paket; der Preis enthält die deutsche Umsatzsteuer: https://all-inkl.com/webhosting/premium
+2. WooCommerce: kostenlose Kernplattform, zusätzliche Erweiterungen nach Bedarf: https://woocommerce.com/de/pricing/
+3. Offizielle Stripe-Erweiterung: keine Einrichtungs- oder monatlichen Gebühren für die Integration; Zahlungsabwicklung wird separat berechnet: https://woocommerce.com/document/stripe/
+4. WooCommerce und WordPress-Seiteneditor mit Block-Theme: https://woocommerce.com/document/woocommerce-store-editing/the-editor/
+5. Offizieller WordPress MCP Adapter, Standardserver und Authentifizierung: https://github.com/WordPress/mcp-adapter/blob/trunk/docs/guides/default-server.md
+6. OpenAI: eigene MCP-Verbindungen in ChatGPT, Anmeldung und Berechtigungen: https://developers.openai.com/api/docs/guides/custom-mcp-server
+7. Germanized Pro: 85 € für 1 Domain mit 12 Monaten Updates/Support; Verlängerung optional 65 € jährlich; Preise einschließlich gesetzlicher Umsatzsteuer: https://vendidero.de/woocommerce-germanized
+8. Germanized: Rechnungen, Stornierungen, Exporte und E-Rechnungen: https://vendidero.de/woocommerce-germanized/features und https://vendidero.de/doc/woocommerce-germanized/e-rechnungen-erstellen
+9. ATUM Free: Stammdaten, Lieferanten, Einkaufspreise und einfache Einkaufsbestellungen: https://wordpress.org/plugins/atum-stock-manager-for-woocommerce/
+10. ATUM Purchase Orders PRO: weiterführende Einkaufsprozesse und Lieferantenrechnungen als kostenpflichtige Erweiterung: https://stockmanagementlabs.com/addons/atum-purchase-orders-pro/
+11. Claude Code: native Windows-Installation, WinGet und Systemvoraussetzungen: https://code.claude.com/docs/en/setup
+12. BMF: FAQ zur E-Rechnung, Ausnahmen für Privatkunden und Empfang durch Unternehmen, Stand März 2026: https://www.bundesfinanzministerium.de/Content/DE/FAQ/e-rechnung.html
+13. § 34a UStDV: Rechnungsangaben und Hinweis auf die Steuerbefreiung für Kleinunternehmer: https://www.gesetze-im-internet.de/ustdv_1980/__34a.html
+14. Germanized: Kleinunternehmer-Kennzeichnung und Verzicht auf Mehrwertsteuerausweis im Shop: https://vendidero.de/woocommerce-germanized/features
+15. ELSTER: Kleinunternehmerregelung, fehlender Vorsteuerabzug und gesondert zu behandelnde Vorgänge: https://www.elster.de/elsterweb/helpGlobal?themaGlobal=help_fseeun_202501

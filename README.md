@@ -9,3 +9,6 @@ Vercel-kompatibler Next.js-Shop. Produkte werden über `/api/products` aus `http
 4. Deploy klicken.
 
 Es sind keine Environment Variables nötig.
+
+## WordPress-Projekt (Ablösung von Shopify)
+Der Ordner `wordpress/` enthält das neue WordPress/WooCommerce-Projekt (Block-Theme `pawline`, Plugin `pawline-dropship`, Docker-Umgebung, Tests). Einstieg: `wordpress/README.md` und `wordpress/CLAUDE.md`. Der Next.js-Shop oben bleibt bis zur Umstellung unverändert.
